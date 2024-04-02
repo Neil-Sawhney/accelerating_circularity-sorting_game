@@ -7,8 +7,16 @@ enum class Cmd
 {
   STATUS,
   TARGET,
-  CARD_ID,
-  BUTTON_HIT,
+  CARD_INFO,
+  TARGET_HIT,
+};
+
+enum class Status
+{
+  READY,
+  WAITING_FOR_CARD,
+  WAITING_FOR_TRIGGER,
+  ERROR,
 };
 
 
@@ -23,6 +31,7 @@ void serial_init();
  */
 void writeSerial(Cmd, String message);
 void writeSerial(Cmd, Button buttonId);
+void writeSerial(Cmd, bool targetHit);
 
 /*
  * Reads from the serial port and returns the target button id.

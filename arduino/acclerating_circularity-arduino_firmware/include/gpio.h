@@ -27,7 +27,7 @@ void gpio_init();
 String readNFC215();
 
 // check the button with the given id, returns True if the button is pressed, False otherwise
-bool readButton(int button_id);
+bool readButton(Button button_id);
 
 // check the trigger, returns True if the trigger is pressed, False otherwise
 bool triggerPressed();

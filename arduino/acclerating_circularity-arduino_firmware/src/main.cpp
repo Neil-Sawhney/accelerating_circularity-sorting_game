@@ -8,17 +8,13 @@ void setup()
   serial_init();
   gpio_init();
 
-  String msg = "ready";
-  writeSerial(Cmd::STATUS, msg);
+  writeSerial(Cmd::STATUS, Status::READY);
 }
 
 void loop()
 {
-  String currCard = waitForCard();
-  writeSerial(Cmd::CARD_ID, currCard);
+  waitForCard();
 
   Button targetId = waitForTrigger();
-
-  Button hit = waitForHit(targetId);
-  writeSerial(Cmd::BUTTON_HIT, hit);
+  waitForHit(targetId);
 }
