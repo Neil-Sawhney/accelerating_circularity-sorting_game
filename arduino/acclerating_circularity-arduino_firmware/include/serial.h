@@ -9,6 +9,7 @@ enum class Cmd
   TARGET,
   CARD_INFO,
   TARGET_HIT,
+  LOGGING,
 };
 
 enum class Status
