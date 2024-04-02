@@ -2,6 +2,7 @@
 An arcade style sorting game for an exhibition in a class on Data Science for Social Good.
 
 ### Requirements
+* platformio
 * python 3.10
 * see requirements.txt
 
