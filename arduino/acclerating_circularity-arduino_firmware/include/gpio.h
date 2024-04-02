@@ -1,5 +1,6 @@
 #pragma once
 #include <MFRC522.h>
+#include "serial.h"
 
 //TODO: set correctly
 // NFC reader setup
@@ -7,6 +8,17 @@
 #define RST_PIN 9
 
 MFRC522 mfrc522(SS_PIN, RST_PIN);
+
+enum class Button
+{
+  NONE,
+  BUTTON_1,
+  BUTTON_2,
+  BUTTON_3,
+  BUTTON_4,
+  BUTTON_5,
+  BUTTON_6,
+};
 
 // set pin modes and initialize the RFID reader
 void gpio_init();
@@ -18,10 +30,7 @@ String readNFC215();
 bool readButton(int button_id);
 
 // check the trigger, returns True if the trigger is pressed, False otherwise
-void readTrigger();
+bool triggerPressed();
 
-// Turns on the light for the button with the given id
-void setTarget(int button_id);
-
-// Turns off the light for the button with the given id
-void resetTarget(int button_id);
+// illuminate the button with the given id, if button_id is Button::NONE, don't illuminate any button
+void illuminateButton(Button buttonId, bool on);

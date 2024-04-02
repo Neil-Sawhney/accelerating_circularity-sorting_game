@@ -9,3 +9,20 @@ String waitForCard() {
   }
   return nfcInfo;
 }
+
+Button waitForTrigger() {
+  Button targetId = Button::NONE;
+
+  while (!triggerPressed())
+  {
+    targetId = getTarget();
+
+    // don't turn off an illuminated button
+    if (targetId != Button::NONE)
+    {
+      illuminateButton(targetId, true);
+    }
+  }
+
+  return targetId;
+}

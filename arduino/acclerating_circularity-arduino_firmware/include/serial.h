@@ -1,11 +1,16 @@
 #pragma once
 
-enum class cmd {
+#include <Arduino.h>
+#include "gpio.h"
+
+enum class Cmd
+{
   STATUS,
   TARGET,
   CARD_ID,
-  BUTTON_ID,
+  BUTTON_HIT,
 };
+
 
 /*
  * Sets up the serial port.
@@ -16,11 +21,11 @@ void serial_init();
 /*
  * Writes a message to the serial port.
  */
-void writeSerial(cmd, char* message);
+void writeSerial(Cmd, String message);
+void writeSerial(Cmd, Button buttonId);
 
 /*
  * Reads from the serial port and returns the target button id.
- * If the target button id is -1, there is no target.
- * If there is nothing to read, return 0
+ * If there is nothing to read or if there is no target, return Button:NONE.
  */
-int getTarget();
+Button getTarget();
