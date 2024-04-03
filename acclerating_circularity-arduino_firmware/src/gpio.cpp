@@ -2,6 +2,8 @@
 #include "gpio.h"
 #include "serial.h"
 
+MFRC522 mfrc522(SS_PIN, RST_PIN);
+
 void gpio_init()
 {
   // TODO: setup the pins

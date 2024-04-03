@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "utils.h"
 #include "gpio.h"
+#include "serial.h"
 
 void waitForCard() {
   writeSerial(Cmd::CARD_INFO, Status::WAITING_FOR_CARD);

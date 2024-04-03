@@ -1,13 +1,10 @@
 #pragma once
 #include <MFRC522.h>
-#include "serial.h"
 
 //TODO: set correctly
 // NFC reader setup
 #define SS_PIN 10
 #define RST_PIN 9
-
-MFRC522 mfrc522(SS_PIN, RST_PIN);
 
 enum class Button
 {
