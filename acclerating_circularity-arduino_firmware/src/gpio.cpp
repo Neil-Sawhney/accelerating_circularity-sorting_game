@@ -17,6 +17,7 @@ int getButtonLedPin(Button buttonId)
 
 void gpio_init()
 {
+  //TODO: switch everything to use internal pullups!
   pinMode(TRIGGER_PIN, INPUT);
   for (int i = 0; i < NUM_BUTTONS; i++)
   {
