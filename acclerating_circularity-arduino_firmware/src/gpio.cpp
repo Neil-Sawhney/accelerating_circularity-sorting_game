@@ -5,6 +5,20 @@
 
 MFRC522 mfrc522(SS_PIN, RST_PIN);
 
+void gpio_init()
+{
+  //TODO: switch everything to use internal pullups!
+  pinMode(TRIGGER_PIN, INPUT_PULLUP);
+  for (int i = 0; i < NUM_BUTTONS; i++)
+  {
+    pinMode(buttonPinMap[i], INPUT_PULLUP);
+    pinMode(buttonLedPinMap[i], OUTPUT);
+  }
+
+  turnOffAllLeds();
+  mfrc522.PCD_Init();
+}
+
 int getButtonPin(Button buttonId)
 {
   return buttonPinMap[static_cast<int>(buttonId)];
@@ -13,20 +27,6 @@ int getButtonPin(Button buttonId)
 int getButtonLedPin(Button buttonId)
 {
   return buttonLedPinMap[static_cast<int>(buttonId)];
-}
-
-void gpio_init()
-{
-  //TODO: switch everything to use internal pullups!
-  pinMode(TRIGGER_PIN, INPUT);
-  for (int i = 0; i < NUM_BUTTONS; i++)
-  {
-    pinMode(buttonPinMap[i], INPUT);
-    pinMode(buttonLedPinMap[i], OUTPUT);
-  }
-
-  turnOffAllLeds();
-  mfrc522.PCD_Init();
 }
 
 String readNFC215()
@@ -74,7 +74,7 @@ bool readButton(Button button_id)
     return false;
   }
 
-  if (digitalRead(getButtonPin(button_id)) == HIGH)
+  if (digitalRead(getButtonPin(button_id)) == LOW)
   {
     writeSerial(Cmd::LOGGING, "button " + String(static_cast<int>(button_id)) + " pressed");
     return true;
@@ -85,7 +85,7 @@ bool readButton(Button button_id)
 
 bool triggerPressed()
 {
-  if (digitalRead(TRIGGER_PIN) == HIGH)
+  if (digitalRead(TRIGGER_PIN) == LOW)
   {
     writeSerial(Cmd::LOGGING, "trigger pressed");
     return true;

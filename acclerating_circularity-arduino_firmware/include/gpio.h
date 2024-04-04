@@ -34,15 +34,14 @@ enum class Button
   NONE,
 };
 
+// set pin modes and initialize the RFID reader
+void gpio_init();
+
 //maps button ids to pins
 const int buttonPinMap[] = {BUTTON_0_PIN, BUTTON_1_PIN, BUTTON_2_PIN, BUTTON_3_PIN, BUTTON_4_PIN, BUTTON_5_PIN};
 const int buttonLedPinMap[] = {BUTTON_0_LED_PIN, BUTTON_1_LED_PIN, BUTTON_2_LED_PIN, BUTTON_3_LED_PIN, BUTTON_4_LED_PIN, BUTTON_5_LED_PIN};
-
 int getButtonPin(Button buttonId);
 int getButtonLedPin(Button buttonId);
-
-// set pin modes and initialize the RFID reader
-void gpio_init();
 
 // check the RFID reader, returns the card id if a card is detected, returns "none" otherwise
 String readNFC215();
