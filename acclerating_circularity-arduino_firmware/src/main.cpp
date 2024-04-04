@@ -12,6 +12,8 @@ void setup()
 void loop()
 {
   writeSerial(Cmd::STATUS, Status::READY);
+  waitForStatus();
+
   waitForCard();
 
   Button targetId = waitForTarget();

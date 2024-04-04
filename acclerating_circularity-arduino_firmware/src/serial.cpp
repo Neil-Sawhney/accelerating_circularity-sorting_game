@@ -57,3 +57,18 @@ Button getTarget()
     }
     return Button::NONE;
 }
+
+Status getStatus()
+{
+    if (Serial.available() > 0)
+    {
+        // incoming message should be in the format "Cmd::STATUS,Status::ID"
+        String message = Serial.readStringUntil('\n');
+        if (message.startsWith(String(static_cast<int>(Cmd::STATUS))))
+        {
+            int status = message.substring(message.indexOf(',') + 1).toInt();
+            return static_cast<Status>(status);
+        }
+    }
+    return Status::NONE;
+}

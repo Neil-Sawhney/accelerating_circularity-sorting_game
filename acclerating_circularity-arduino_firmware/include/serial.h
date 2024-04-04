@@ -15,7 +15,8 @@ enum class Cmd
 enum class Status
 {
   READY,
-  ERROR,
+  RESET,
+  NONE,
 };
 
 
@@ -39,3 +40,9 @@ void writeSerial(Cmd, Status status);
  * If there is nothing to read or if there is no target, return Button:NONE.
  */
 Button getTarget();
+
+/*
+ * Reads from the serial port and returns the status.
+ * If there is nothing to read, return Status::ERROR.
+ */
+Status getStatus();

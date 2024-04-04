@@ -9,6 +9,14 @@
 // time it takes for the disks to slide under the door in milliseconds
 #define DOOR_TIME 1000
 
+
+/*
+ * wait until we get Cmd::STATUS, Status::READY from the serial port
+ * indicating that the UI is ready to start the game
+ * if we get Cmd::STATUS, Status::RESET, clear the basket and wait again
+ */
+void waitForStatus();
+
 /*
  * wait until a card is detected and send its information to the serial port
  */

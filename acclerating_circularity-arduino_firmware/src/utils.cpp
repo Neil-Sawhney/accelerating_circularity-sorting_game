@@ -3,15 +3,31 @@
 #include "gpio.h"
 #include "serial.h"
 
-void waitForCard() {
+void waitForStatus()
+{
+  Status status = Status::NONE;
+  while (status != Status::READY)
+  {
+    status = getStatus();
+    if (status == Status::RESET)
+    {
+      clearBasket();
+    }
+  }
+}
+
+void waitForCard()
+{
   String nfcInfo = "none";
-  while (nfcInfo == "none") {
+  while (nfcInfo == "none")
+  {
     nfcInfo = readNFC215();
   }
   writeSerial(Cmd::CARD_INFO, nfcInfo);
 }
 
-Button waitForTarget() {
+Button waitForTarget()
+{
   Button targetId = Button::NONE;
 
   while (targetId == Button::NONE)
@@ -23,13 +39,15 @@ Button waitForTarget() {
   return targetId;
 }
 
-void waitForTrigger() {
+void waitForTrigger()
+{
   while (!triggerPressed())
   {
   }
 }
 
-void waitForHit(Button targetId) {
+void waitForHit(Button targetId)
+{
   unsigned long startTime = millis();
   while (millis() - startTime < TRAVEL_TIME)
   {
@@ -44,14 +62,16 @@ void waitForHit(Button targetId) {
   illuminateButton(targetId, false);
 }
 
-void turnOffAllLeds() {
+void turnOffAllLeds()
+{
   for (int i = 0; i < NUM_BUTTONS; i++)
   {
     illuminateButton(static_cast<Button>(i), false);
   }
 }
 
-void clearBasket() {
+void clearBasket()
+{
   setSolenoids(true);
   delay(DOOR_TIME);
   setSolenoids(false);
