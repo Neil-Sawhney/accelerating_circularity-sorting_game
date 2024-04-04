@@ -22,6 +22,8 @@
 
 #define TRIGGER_PIN 2
 
+#define SOLENOIDS_PIN 0
+
 #define NUM_BUTTONS 6
 enum class Button
 {
@@ -54,3 +56,6 @@ bool triggerPressed();
 
 // illuminate the button with the given id, if button_id is Button::NONE, don't illuminate any button
 void illuminateButton(Button buttonId, bool state);
+
+// if state is true, turn on all the solenoids, otherwise turn them off
+void setSolenoids(bool state);

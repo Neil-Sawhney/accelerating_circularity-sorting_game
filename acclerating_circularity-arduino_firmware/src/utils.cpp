@@ -50,3 +50,9 @@ void turnOffAllLeds() {
     illuminateButton(static_cast<Button>(i), false);
   }
 }
+
+void clearBasket() {
+  setSolenoids(true);
+  delay(DOOR_TIME);
+  setSolenoids(false);
+}

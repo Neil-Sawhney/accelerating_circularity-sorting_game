@@ -7,7 +7,6 @@ MFRC522 mfrc522(SS_PIN, RST_PIN);
 
 void gpio_init()
 {
-  //TODO: switch everything to use internal pullups!
   pinMode(TRIGGER_PIN, INPUT_PULLUP);
   for (int i = 0; i < NUM_BUTTONS; i++)
   {
@@ -102,8 +101,20 @@ void illuminateButton(Button buttonId, bool state)
   }
 
   int ledPin = getButtonLedPin(buttonId);
-
-  writeSerial(Cmd::LOGGING, "illuminating button " + String(static_cast<int>(buttonId)) + " with state " + state);
-
   digitalWrite(ledPin, state);
+
+  if (state)
+  {
+    writeSerial(Cmd::LOGGING, "button" + String(static_cast<int>(buttonId)) + " on");
+  }
+  else
+  {
+    writeSerial(Cmd::LOGGING, "button" + String(static_cast<int>(buttonId)) + " off");
+  }
 }
+
+void setSolenoids(bool state)
+{
+  digitalWrite(SOLENOIDS_PIN, state);
+}
+

@@ -6,6 +6,9 @@
 //  time it takes for the disk to get from the shooter to the wall in milliseconds
 #define TRAVEL_TIME 1000
 
+// time it takes for the disks to slide under the door in milliseconds
+#define DOOR_TIME 1000
+
 /*
  * wait until a card is detected and send its information to the serial port
  */
@@ -33,3 +36,8 @@ void waitForHit(Button targetId);
  * turn off the leds on all the buttons
  */
 void turnOffAllLeds();
+
+/*
+ * turn on the solenoids for DOOR_TIME milliseconds
+ */
+void clearBasket();
