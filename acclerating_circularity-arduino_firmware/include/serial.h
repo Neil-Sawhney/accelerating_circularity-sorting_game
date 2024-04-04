@@ -15,8 +15,6 @@ enum class Cmd
 enum class Status
 {
   READY,
-  WAITING_FOR_CARD,
-  WAITING_FOR_TRIGGER,
   ERROR,
 };
 

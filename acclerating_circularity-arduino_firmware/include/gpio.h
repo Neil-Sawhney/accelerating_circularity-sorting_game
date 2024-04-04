@@ -3,8 +3,8 @@
 
 //TODO: set correctly
 // NFC reader setup
-#define SS_PIN 10
-#define RST_PIN 9
+#define SS_PIN 9
+#define RST_PIN 8
 
 enum class Button
 {

@@ -4,18 +4,17 @@
 #include "serial.h"
 
 void waitForCard() {
-  writeSerial(Cmd::CARD_INFO, Status::WAITING_FOR_CARD);
-
   String nfcInfo = "";
   while (nfcInfo.length() == 0) {
     nfcInfo = readNFC215();
   }
-  writeSerial(Cmd::CARD_INFO, nfcInfo);
+  if (nfcInfo != "none")
+  {
+    writeSerial(Cmd::CARD_INFO, nfcInfo);
+  }
 }
 
 Button waitForTrigger() {
-  writeSerial(Cmd::STATUS, Status::WAITING_FOR_TRIGGER);
-
   Button targetId = Button::NONE;
 
   while (!triggerPressed())

@@ -25,12 +25,25 @@ String readNFC215()
   }
 
   String nfcInfo = "";
-  for (byte i = 0; i < mfrc522.uid.size; i++)
+
+  int blockAddr = 4; // Block address to read from
+  byte data[18];
+  byte size = 18;
+  MFRC522::StatusCode status = mfrc522.MIFARE_Read(blockAddr, data, &size);
+
+  if (status == MFRC522::StatusCode::STATUS_OK)
   {
-    nfcInfo.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " "));
-    nfcInfo.concat(String(mfrc522.uid.uidByte[i], HEX));
+    // convert the data to a string
+    for (byte i = 9; i < 16; i++)
+    {
+      // if the data is a letter or a number
+      if ((41 <= data[i] && data[i] <= 0x5A) || (61 <= data[i] && data[i] <= 0x7A))
+      {
+        nfcInfo += (char)data[i];
+      }
+    }
+    mfrc522.PICC_HaltA();
   }
-  nfcInfo.toUpperCase();
 
   return nfcInfo;
 }

@@ -15,6 +15,6 @@ void loop()
 {
   waitForCard();
 
-  Button targetId = waitForTrigger();
-  waitForHit(targetId);
+  // Button targetId = waitForTrigger();
+  // waitForHit(targetId);
 }
