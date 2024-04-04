@@ -7,14 +7,14 @@ void setup()
 {
   serial_init();
   gpio_init();
-
-  writeSerial(Cmd::STATUS, Status::READY);
 }
 
 void loop()
 {
+  writeSerial(Cmd::STATUS, Status::READY);
   waitForCard();
 
-  // Button targetId = waitForTrigger();
-  // waitForHit(targetId);
+  Button targetId = waitForTarget();
+  waitForTrigger();
+  waitForHit(targetId);
 }

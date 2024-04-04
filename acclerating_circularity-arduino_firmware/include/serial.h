@@ -29,6 +29,7 @@ void serial_init();
  * Writes a message to the serial port.
  */
 void writeSerial(Cmd, String message);
+void writeSerial(Cmd, const char* message);
 void writeSerial(Cmd, bool targetHit);
 void writeSerial(Cmd, Button buttonId);
 void writeSerial(Cmd, Status status);

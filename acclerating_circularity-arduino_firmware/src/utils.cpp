@@ -4,31 +4,29 @@
 #include "serial.h"
 
 void waitForCard() {
-  String nfcInfo = "";
-  while (nfcInfo.length() == 0) {
+  String nfcInfo = "none";
+  while (nfcInfo == "none") {
     nfcInfo = readNFC215();
   }
-  if (nfcInfo != "none")
-  {
-    writeSerial(Cmd::CARD_INFO, nfcInfo);
-  }
+  writeSerial(Cmd::CARD_INFO, nfcInfo);
 }
 
-Button waitForTrigger() {
+Button waitForTarget() {
   Button targetId = Button::NONE;
 
-  while (!triggerPressed())
+  while (targetId == Button::NONE)
   {
     targetId = getTarget();
-
-    // don't turn off an illuminated button
-    if (targetId != Button::NONE)
-    {
-      illuminateButton(targetId, true);
-    }
   }
 
+  illuminateButton(targetId, true);
   return targetId;
+}
+
+void waitForTrigger() {
+  while (!triggerPressed())
+  {
+  }
 }
 
 void waitForHit(Button targetId) {
@@ -38,8 +36,17 @@ void waitForHit(Button targetId) {
     if (readButton(targetId))
     {
       writeSerial(Cmd::TARGET_HIT, true);
+      return;
     }
   }
 
   writeSerial(Cmd::TARGET_HIT, false);
+  illuminateButton(targetId, false);
+}
+
+void turnOffAllLeds() {
+  for (int i = 0; i < NUM_BUTTONS; i++)
+  {
+    illuminateButton(static_cast<Button>(i), false);
+  }
 }

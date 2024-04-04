@@ -1,12 +1,30 @@
 #include <MFRC522.h>
 #include "gpio.h"
 #include "serial.h"
+#include "utils.h"
 
 MFRC522 mfrc522(SS_PIN, RST_PIN);
 
+int getButtonPin(Button buttonId)
+{
+  return buttonPinMap[static_cast<int>(buttonId)];
+}
+
+int getButtonLedPin(Button buttonId)
+{
+  return buttonLedPinMap[static_cast<int>(buttonId)];
+}
+
 void gpio_init()
 {
-  // TODO: setup the pins
+  pinMode(TRIGGER_PIN, INPUT);
+  for (int i = 0; i < NUM_BUTTONS; i++)
+  {
+    pinMode(buttonPinMap[i], INPUT);
+    pinMode(buttonLedPinMap[i], OUTPUT);
+  }
+
+  turnOffAllLeds();
   mfrc522.PCD_Init();
 }
 
@@ -46,4 +64,45 @@ String readNFC215()
   }
 
   return nfcInfo;
+}
+
+bool readButton(Button button_id)
+{
+  if (button_id == Button::NONE)
+  {
+    return false;
+  }
+
+  if (digitalRead(getButtonPin(button_id)) == HIGH)
+  {
+    writeSerial(Cmd::LOGGING, "button " + String(static_cast<int>(button_id)) + " pressed");
+    return true;
+  }
+
+  return false;
+}
+
+bool triggerPressed()
+{
+  if (digitalRead(TRIGGER_PIN) == HIGH)
+  {
+    writeSerial(Cmd::LOGGING, "trigger pressed");
+    return true;
+  }
+
+  return false;
+}
+
+void illuminateButton(Button buttonId, bool state)
+{
+  if (buttonId == Button::NONE)
+  {
+    return;
+  }
+
+  int ledPin = getButtonLedPin(buttonId);
+
+  writeSerial(Cmd::LOGGING, "illuminating button " + String(static_cast<int>(buttonId)) + " with state " + state);
+
+  digitalWrite(ledPin, state);
 }

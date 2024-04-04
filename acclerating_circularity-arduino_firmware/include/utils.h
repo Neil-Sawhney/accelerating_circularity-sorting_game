@@ -12,15 +12,24 @@
 void waitForCard();
 
 /*
- * wait until the trigger is pressed
- * illuminates the target button if there is one while waiting
+ * wait until we get the target button id from the serial port
+ * illuminates the target button if there is one
  * return the target button id or Button::NONE if there is no target
- * writes Status::ERROR to the serial port if the trigger is pressed without a target
  */
-Button waitForTrigger();
+Button waitForTarget();
+
+/*
+ * wait until the trigger is pressed
+ */
+void waitForTrigger();
 
 /*
  * wait until the target button is hit or the TRAVEL_TIME has passed
  * send via serial true if the correct button was hit or false if the TRAVEL_TIME has passed
  */
 void waitForHit(Button targetId);
+
+/*
+ * turn off the leds on all the buttons
+ */
+void turnOffAllLeds();
