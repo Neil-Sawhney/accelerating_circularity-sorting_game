@@ -1,16 +1,10 @@
-import glob
-import importlib
 import logging
-import os
 import sys
 
-import serial
 from PyQt5 import QtCore, QtWidgets, uic
-from PyQt5.QtWidgets import QMessageBox
 
-import arduino.serial_rw as arduino
 import default_parameters as params
-import GUI.display_time as dTime
+import game_logic.game as game
 import GUI.error_display as eDisp
 
 # logging
@@ -29,52 +23,34 @@ logging.basicConfig(
 )
 
 
-def updateDefaultParameters(paramName, newValue):
-    with open("./default_parameters.py", "r") as f:
-        lines = f.readlines()
-    with open("./default_parameters.py", "w") as f:
-        for line in lines:
-            if paramName in line:
-                # if the value is a float, don't add quotes
-                if isinstance(newValue, float):
-                    f.write(paramName + " = " + str(newValue) + "\n")
-                else:
-                    f.write(paramName + ' = "' + newValue + '"\n')
-            else:
-                f.write(line)
-    # reload the parameters
-    importlib.reload(params)
-
-
-def updateHighScore(newScore):
-    try:
-        os.remove("./logs/high_score.log")
-    except FileNotFoundError:
-        pass
-
-    with open("./logs/high_score.log", "w") as f:
-        f.write(str(newScore))
-
-
 class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
+        self.game_controller = game.Game()
+
+        # Sets the maximum time to 180 seconds
+        self.bar.setMaximum(180)
 
         # setup the GUI from the .ui file
         uic.loadUi("GUI/main.ui", self)
 
-        arduino.init()
+        self.set_info("PRESS THE FLASHING BUTTON TO BEGIN!")
 
-        while not arduino.check_ready():
-            # set the info label to "Disconnected" until the arduino sends the ready signal
-            self.info.setText("Initializing...")
+    def set_info(self, text):
+        self.info.setText(text)
 
-        self.info.setText("PRESS THE FLASHING BUTTON TO BEGIN!")
+    def set_score(self, score):
+        self.score.display(score)
+
+    def set_high_score(self, high_score):
+        self.high_score.display(high_score)
+
+    def set_time_left(self, time_left):
+        self.bar.setValue(time_left)
 
     def update(self):
-        T = dTime.getTime()
-        data = arduino.readData()
+        self.game_controller.update()
 
 
 def main():

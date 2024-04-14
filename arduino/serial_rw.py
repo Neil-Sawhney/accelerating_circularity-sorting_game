@@ -4,10 +4,7 @@ from enum import Enum
 import serial
 
 import default_parameters as params
-import GUI.display_time as dTime
 import GUI.error_display as eDisp
-
-ser = serial.Serial()
 
 
 class Cmd(Enum):
@@ -34,62 +31,61 @@ class Button(Enum):
     NONE = 6
 
 
-def read_data():
-    # get a line from the arduino
-    serialData = ser.readline().decode("utf-8")
-    logging.debug("RX:" + serialData)
-    rx_cmd, rx_message = serialData.split(",")
-    cmd = Cmd(int(rx_cmd))
+class SerialRW:
+    def __init__(self):
+        self.ser = serial.Serial()
 
-    # while the data recievied is a logging command, print the data to the log file and get the next line
-    while cmd == Cmd.LOGGING:
-        logging.debug("Arduino:" + rx_message)
+        # if the serial port is not open, open it
+        if not (self.ser.isOpen()):
+            try:
+                ser = serial.Serial(params.ARDUINO_COMPORT, 9600)
+                logging.info("Opened arduino serial port: " + params.ARDUINO_COMPORT)
+            except serial.SerialException:
+                errormsg = (
+                    "Could not open arduino serial port: " + params.ARDUINO_COMPORT
+                )
+                logging.error(errormsg)
+                eDisp.displayError(
+                    errormsg,
+                    "Change the COM port in the defaultParameters.py file.",
+                )
+                return
 
+    def read_data(self):
         # get a line from the arduino
-        serialData = ser.readline().decode("utf-8")
+        serialData = self.ser.readline().decode("utf-8")
         logging.debug("RX:" + serialData)
         rx_cmd, rx_message = serialData.split(",")
         cmd = Cmd(int(rx_cmd))
 
-    if cmd == Cmd.STATUS:
-        message = Status(int(rx_message))
-    elif cmd == Cmd.TARGET_HIT:
-        message = Button(int(rx_message))
-    else:
-        message = rx_message
+        # while the data recievied is a logging command, print the data to the log file and get the next line
+        while cmd == Cmd.LOGGING:
+            logging.debug("Arduino:" + rx_message)
 
-    return cmd, message
+            # get a line from the arduino
+            serialData = self.ser.readline().decode("utf-8")
+            logging.debug("RX:" + serialData)
+            rx_cmd, rx_message = serialData.split(",")
+            cmd = Cmd(int(rx_cmd))
 
+        if cmd == Cmd.STATUS:
+            message = Status(int(rx_message))
+        elif cmd == Cmd.TARGET_HIT:
+            message = Button(int(rx_message))
+        else:
+            message = rx_message
 
-def check_ready():
-    # check if the arduino is ready
-    cmd, message = read_data()
-    if message == Status.READY:
-        return True
-    else:
-        return False
+        return cmd, message
 
+    def check_ready(self):
+        # check if the arduino is ready
+        cmd, message = self.read_data()
+        if message == Status.READY:
+            return True
+        else:
+            return False
 
-def init():
-    global ser
-
-    # if the serial port is not open, open it
-    if not (ser.isOpen()):
-        try:
-            ser = serial.Serial(params.ARDUINO_COMPORT, 9600)
-            logging.info("Opened arduino serial port: " + params.ARDUINO_COMPORT)
-        except serial.SerialException:
-            errormsg = "Could not open arduino serial port: " + params.ARDUINO_COMPORT
-            logging.error(errormsg)
-            eDisp.displayError(
-                errormsg,
-                "Change the COM port in the defaultParameters.py file.",
-            )
-            return
-
-
-def deinit():
-    global ser
-    if ser.isOpen():
-        ser.close()
-        logging.info("Serial port closed")
+    def deinit(self):
+        if self.ser.isOpen():
+            self.ser.close()
+            logging.info("Serial port closed")
