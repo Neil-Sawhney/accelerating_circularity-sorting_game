@@ -53,52 +53,9 @@ class MainWindow(QtWidgets.QMainWindow):
         # setup the GUI from the .ui file
         uic.loadUi("GUI/main.ui", self)
 
-        # pages setup
-        self.actionParameters.triggered.connect(self.Parameters)
-        self.actionHome.triggered.connect(self.Home)
-
-        # COM PORTS
-        self.ports = self.comPorts()
-        self.ports.append("None")
-        self.arduinoDropdown.addItems(self.ports)
-        self.arduinoDropdown.currentIndexChanged.connect(self.arduinoDropdownChanged)
-
     def update(self):
         T = dTime.getTime()
         data = arduino.readData()
-
-    def Parameters(self):
-        self.stackedWidget.setCurrentIndex(1)
-
-    def Home(self):
-        self.stackedWidget.setCurrentIndex(0)
-
-    def arduinoDropdownChanged(self):
-        updateDefaultParameters(
-            "ARDUINO_COMPORT", self.ports[self.arduinoDropdown.currentIndex()]
-        )
-
-    def comPorts(self):
-
-        if sys.platform.startswith("win"):
-            ports = ["COM%s" % (i + 1) for i in range(256)]
-        elif sys.platform.startswith("linux") or sys.platform.startswith("cygwin"):
-            # this excludes your current terminal "/dev/tty"
-            ports = glob.glob("/dev/tty[A-Za-z]*")
-        elif sys.platform.startswith("darwin"):
-            ports = glob.glob("/dev/tty.*")
-        else:
-            raise EnvironmentError("Unsupported platform")
-
-        result = []
-        for port in ports:
-            try:
-                s = serial.Serial(port)
-                s.close()
-                result.append(port)
-            except (OSError, serial.SerialException):
-                pass
-        return result
 
 
 def main():
