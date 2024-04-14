@@ -7,7 +7,6 @@ import serial
 
 import arduino.serial_rw as arduino
 import default_parameters as params
-from GUI.display import MainWindow as disp
 
 # logging
 level = {
@@ -32,13 +31,12 @@ class GameState(Enum):
 
 
 class Game:
-    def __init__(self):
+    def __init__(self, disp):
+        self.disp = disp
         self.ard = arduino.SerialRW()
-
-        self.set_start_time()
         self.game_state = GameState.WAITING_FOR_START
 
-        arduino.init()
+        self.set_start_time()
 
     def update(self):
         if self.game_state == GameState.WAITING_FOR_START:
@@ -56,7 +54,7 @@ class Game:
             try:
                 arduino_ready = arduino.check_ready()
             except serial.SerialException:
-                disp.set_info(
+                self.disp.set_info(
                     "Error: Could not open serial port: " + params.ARDUINO_COMPORT
                 )
 

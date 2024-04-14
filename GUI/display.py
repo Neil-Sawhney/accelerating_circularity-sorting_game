@@ -27,7 +27,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
-        self.game_controller = game.Game()
+        self.game_controller = game.Game(self)
 
         # Sets the maximum time to 180 seconds
         self.bar.setMaximum(180)

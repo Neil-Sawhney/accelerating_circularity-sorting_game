@@ -84,8 +84,3 @@ class SerialRW:
             return True
         else:
             return False
-
-    def deinit(self):
-        if self.ser.isOpen():
-            self.ser.close()
-            logging.info("Serial port closed")

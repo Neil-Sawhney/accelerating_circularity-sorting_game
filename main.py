@@ -9,8 +9,8 @@ def main():
     except Exception as e:
         eDisp.displayError(e)
     finally:
-        # if the program is closed, or an error occurs, close the serial port
-        serial_rw.deinit()
+        # if the program is closed, or an error occurs
+        pass
 
 
 if __name__ == "__main__":
