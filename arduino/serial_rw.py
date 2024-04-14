@@ -3,9 +3,9 @@ from enum import Enum
 
 import serial
 
-import defaultParameters as params
-import GUI.displayTime as dTime
-import GUI.errorDisplay as eDisp
+import default_parameters as params
+import GUI.display_time as dTime
+import GUI.error_display as eDisp
 
 ser = serial.Serial()
 
@@ -34,7 +34,7 @@ class Button(Enum):
     NONE = 6
 
 
-def RData():
+def read_data():
     # get a line from the arduino
     serialData = ser.readline().decode("utf-8")
     logging.debug("RX:" + serialData)
@@ -61,6 +61,15 @@ def RData():
     return cmd, message
 
 
+def check_ready():
+    # check if the arduino is ready
+    cmd, message = read_data()
+    if message == Status.READY:
+        return True
+    else:
+        return False
+
+
 def init():
     global ser
 
@@ -74,7 +83,7 @@ def init():
             logging.error(errormsg)
             eDisp.displayError(
                 errormsg,
-                "Change the COM port in the parameters menu, or alternatively in the defaultParameters.py file.",
+                "Change the COM port in the defaultParameters.py file.",
             )
             return
 

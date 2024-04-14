@@ -1,6 +1,6 @@
-import arduino.serialRW as serialRW
+import arduino.serial_rw as serial_rw
 import GUI.display as display
-import GUI.errorDisplay as eDisp
+import GUI.error_display as eDisp
 
 
 def main():
@@ -10,7 +10,7 @@ def main():
         eDisp.displayError(e)
     finally:
         # if the program is closed, or an error occurs, close the serial port
-        serialRW.deinit()
+        serial_rw.deinit()
 
 
 if __name__ == "__main__":
