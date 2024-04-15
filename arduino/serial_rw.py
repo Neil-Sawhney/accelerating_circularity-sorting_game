@@ -52,13 +52,16 @@ class SerialRW:
                 return
 
     def read_data(self):
-        """Reads data from the arduino and returns the command and message,
-        if no data is available, it will block until data is available
+        """Gets one line of data from the arduino and returns the command and message,
+        if no data is available, it will return none. Does not block.
 
         Returns:
             cmd: the command from the arduino
             message: the message from the arduino
         """
+        if not self.ser.in_waiting:
+            return None, None
+
         # get a line from the arduino
         serialData = self.ser.readline().decode("utf-8")
         logging.debug("RX:" + serialData)
@@ -87,28 +90,40 @@ class SerialRW:
 
         Returns:
             True: if the arduino is ready
-            False: if the arduino is not ready
+            False: if the arduino is not ready (no data available)
         """
+
+        if not self.ser.is_open:
+            return None
+
+        if not self.ser.in_waiting:
+            return False
+
         cmd, message = self.read_data()
         if message == Status.READY:
             return True
-        else:
-            return False
+
+        logging.debug("Synchronization Error!! after check_ready")
+        eDisp.displayError("Synchronization Error!!", "Please restart the game.")
+        return False
 
     def get_fabric(self):
         """Gets the fabric from the arduino
+        if no data is available, it will return none. Does not block.
 
         Returns:
             str: the fabric from the arduino
         """
+        if not self.ser.in_waiting:
+            return None
+
         cmd, message = self.read_data()
 
-        while cmd != Cmd.CARD_INFO:
-            cmd, message = self.read_data()
+        if cmd == Cmd.CARD_INFO:
+            return message
 
-        logging.debug("Target:" + str(message))
-
-        return message
+        logging.debug("Synchronization Error!! after get_fabric")
+        eDisp.displayError("Synchronization Error!!", "Please restart the game.")
 
     def set_target(self, fabric):
         """Sends the target to the arduino
@@ -121,3 +136,23 @@ class SerialRW:
             (str(Cmd.TARGET.value) + "," + str(target.value) + "\n").encode()
         )
         logging.debug("TX:" + str(Cmd.TARGET.value) + "," + str(target.value))
+
+    def get_target_hit(self):
+        """Checks if the correct target was hit or missed by the player
+
+        Returns:
+            True: if the correct target was hit
+            False: if the target was missed
+            None: if no data is available
+        """
+
+        if not self.ser.in_waiting:
+            return None
+
+        cmd, message = self.read_data()
+
+        if cmd == Cmd.TARGET_HIT:
+            return bool(message)
+
+        logging.debug("Synchronization Error!! after get_target_hit")
+        eDisp.displayError("Synchronization Error!!", "Please restart the game.")
