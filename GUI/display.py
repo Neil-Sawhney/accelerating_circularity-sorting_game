@@ -47,9 +47,20 @@ class MainWindow(QtWidgets.QMainWindow):
         # setup the GUI from the .ui file
         uic.loadUi("GUI/main.ui", self)
 
+        # Makes the window fullscreen
+        self.showFullScreen()
+
         # Sets the maximum time to 180 seconds
         self.bar.setMaximum(params.TIME_LIMIT)
         self.set_info("PRESS THE FLASHING BUTTON TO BEGIN!")
+
+        # Load the high score
+        try:
+            with open("./logs/high_score.log", "r") as f:
+                high_score = int(f.read())
+                self.set_high_score(high_score)
+        except FileNotFoundError:
+            pass
 
         self.game_controller = game.Game(self)
 

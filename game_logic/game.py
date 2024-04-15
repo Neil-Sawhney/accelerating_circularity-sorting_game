@@ -26,6 +26,7 @@ class Game:
         self.tech_on = False
 
         self.set_start_time()
+        logging.debug("Waiting for start")
 
     def update(self):
         if self.game_state == GameState.WAITING_FOR_START:
@@ -49,11 +50,11 @@ class Game:
             self.disp.set_info(
                 "Error: Could not open serial port: " + params.ARDUINO_COMPORT
             )
-
             return
 
         if arduino_ready:
-            self.game_state = GameState.PLAYING
+            self.game_state = GameState.WAITING_FOR_LOADED_MATERIAL
+            logging.debug("Material loaded, waiting for loaded material")
             self.set_start_time()
 
     def update_progress(self):
@@ -61,6 +62,7 @@ class Game:
         self.disp.set_time_left(params.TIME_LIMIT - time)
 
         if time > params.TIME_LIMIT:
+            logging.debug("Time limit reached, game over")
             self.game_state = GameState.END_STATE
 
     def waiting_for_loaded_material(self):
@@ -82,10 +84,14 @@ class Game:
                     "TECHNOLOGY: ENABLED\n\n" + self.curr_fabric + " was detected!"
                 )
 
+            logging.debug(
+                "Fabric detected: " + self.curr_fabric + ", waiting for trigger press"
+            )
             self.game_state = GameState.WAITING_FOR_TRIGGER_PRESS
 
     def waiting_for_trigger_press(self):
-        if self.ard.get_target_hit():
+        target_hit = self.ard.get_target_hit()
+        if target_hit:
             if self.tech_on:
                 # TODO: chagne the color too
                 # TODO: this will likely dissapear immediately, so fix that without blocking
@@ -100,17 +106,34 @@ class Game:
                     + self.curr_fabric
                     + " was sorted correctly!"
                 )
+            logging.debug("Correct fabric sorted, waiting for loaded material")
             self.disp.set_score(self.disp.score.value() + 1)
+
+            # update high score
+            if self.disp.score.value() > self.disp.high_score.value():
+                self.update_high_score()
+                logging.debug("High score updated to: " + str(self.disp.score.value()))
+
+            self.game_state = GameState.WAITING_FOR_LOADED_MATERIAL
+        elif target_hit is not None:
+            if self.tech_on:
+                self.disp.set_info(
+                    "TECHNOLOGY: ENABLED\n\n"
+                    + self.curr_fabric
+                    + " was sorted incorrectly!"
+                )
+            else:
+                self.disp.set_info(
+                    "TECHNOLOGY: DISABLED\n\n"
+                    + self.curr_fabric
+                    + " was sorted incorrectly!"
+                )
+            logging.debug("Incorrect fabric sorted, waiting for loaded material")
             self.game_state = GameState.WAITING_FOR_LOADED_MATERIAL
 
     def end_game(self):
         # TODO: this will disappear immediately, so fix that (you can probably get away with blocking, but eh, not the best)
         self.disp.set_info("GAME OVER!")
-
-        # update the high score if necessary
-        if self.disp.score.value() > self.disp.high_score.value():
-            self.disp.set_high_score(self.disp.score.value())
-            self.update_high_score(self.disp.score.value())
 
         self.set_info("PRESS THE FLASHING BUTTON TO BEGIN!")
 
@@ -120,14 +143,16 @@ class Game:
     # HELPER FUNCTIONS
     ############################
 
-    def update_high_score(self, new_score):
+    def update_high_score(self):
+        new_score = self.disp.score.value()
+        self.disp.set_high_score(new_score)
         try:
             os.remove("./logs/high_score.log")
         except FileNotFoundError:
             pass
 
         with open("./logs/high_score.log", "w") as f:
-            f.write(str(new_score))
+            f.write(int(new_score))
 
     def set_start_time(self):
         self.start_time = datetime.datetime.now()

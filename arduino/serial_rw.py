@@ -120,6 +120,8 @@ class SerialRW:
         cmd, message = self.read_data()
 
         if cmd == Cmd.CARD_INFO:
+            # string the "\n" from the end of the message if it exists
+            message = message.rstrip()
             return message
 
         logging.debug("Synchronization Error!! after get_fabric")
@@ -152,7 +154,7 @@ class SerialRW:
         cmd, message = self.read_data()
 
         if cmd == Cmd.TARGET_HIT:
-            return bool(message)
+            return int(message)
 
         logging.debug("Synchronization Error!! after get_target_hit")
         eDisp.displayError("Synchronization Error!!", "Please restart the game.")
