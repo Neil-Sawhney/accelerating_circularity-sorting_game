@@ -38,7 +38,7 @@ class SerialRW:
         # if the serial port is not open, open it
         if not (self.ser.isOpen()):
             try:
-                ser = serial.Serial(params.ARDUINO_COMPORT, 9600)
+                self.ser = serial.Serial(params.ARDUINO_COMPORT, 9600)
                 logging.info("Opened arduino serial port: " + params.ARDUINO_COMPORT)
             except serial.SerialException:
                 errormsg = (
@@ -52,6 +52,13 @@ class SerialRW:
                 return
 
     def read_data(self):
+        """Reads data from the arduino and returns the command and message,
+        if no data is available, it will block until data is available
+
+        Returns:
+            cmd: the command from the arduino
+            message: the message from the arduino
+        """
         # get a line from the arduino
         serialData = self.ser.readline().decode("utf-8")
         logging.debug("RX:" + serialData)
@@ -70,17 +77,47 @@ class SerialRW:
 
         if cmd == Cmd.STATUS:
             message = Status(int(rx_message))
-        elif cmd == Cmd.TARGET_HIT:
-            message = Button(int(rx_message))
         else:
             message = rx_message
 
         return cmd, message
 
     def check_ready(self):
-        # check if the arduino is ready
+        """Checks if the arduino is ready to start the game
+
+        Returns:
+            True: if the arduino is ready
+            False: if the arduino is not ready
+        """
         cmd, message = self.read_data()
         if message == Status.READY:
             return True
         else:
             return False
+
+    def get_fabric(self):
+        """Gets the fabric from the arduino
+
+        Returns:
+            str: the fabric from the arduino
+        """
+        cmd, message = self.read_data()
+
+        while cmd != Cmd.CARD_INFO:
+            cmd, message = self.read_data()
+
+        logging.debug("Target:" + str(message))
+
+        return message
+
+    def set_target(self, fabric):
+        """Sends the target to the arduino
+
+        Args:
+            fabric (str): the target to send to the arduino
+        """
+        target = Button(params.fabric_mapping[fabric])
+        self.ser.write(
+            (str(Cmd.TARGET.value) + "," + str(target.value) + "\n").encode()
+        )
+        logging.debug("TX:" + str(Cmd.TARGET.value) + "," + str(target.value))

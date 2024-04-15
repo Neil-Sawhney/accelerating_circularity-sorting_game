@@ -2,6 +2,7 @@ import logging
 import sys
 
 from PyQt5 import QtCore, QtWidgets, uic
+from PyQt5.QtCore import QThread, pyqtSignal
 
 import default_parameters as params
 import game_logic.game as game
@@ -23,19 +24,38 @@ logging.basicConfig(
 )
 
 
+class GameThread(QThread):
+    update_signal = pyqtSignal()  # signal to update the UI
+
+    def __init__(self, game_controller):
+        super(GameThread, self).__init__()
+        self.game_controller = game_controller
+
+    def run(self):
+        while True:
+            # Call your game logic function here
+            self.game_controller.update()
+
+            # Emit the signal to update the UI
+            self.update_signal.emit()
+
+
 class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
-        self.game_controller = game.Game(self)
-
-        # Sets the maximum time to 180 seconds
-        self.bar.setMaximum(180)
-
         # setup the GUI from the .ui file
         uic.loadUi("GUI/main.ui", self)
 
+        # Sets the maximum time to 180 seconds
+        self.bar.setMaximum(params.TIME_LIMIT)
         self.set_info("PRESS THE FLASHING BUTTON TO BEGIN!")
+
+        self.game_controller = game.Game(self)
+
+        # Start the game thread
+        self.game_thread = GameThread(self.game_controller)
+        self.game_thread.start()
 
     def set_info(self, text):
         self.info.setText(text)
@@ -47,10 +67,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.high_score.display(high_score)
 
     def set_time_left(self, time_left):
-        self.bar.setValue(time_left)
-
-    def update(self):
-        self.game_controller.update()
+        self.bar.setValue(int(time_left))
 
 
 def main():
