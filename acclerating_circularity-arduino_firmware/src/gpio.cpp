@@ -82,6 +82,17 @@ bool readButton(Button button_id)
   return false;
 }
 
+bool startButtonPressed()
+{
+  if (digitalRead(START_BUTTON_PIN) == LOW)
+  {
+    writeSerial(Cmd::LOGGING, "start button pressed");
+    return true;
+  }
+
+  return false;
+}
+
 bool triggerPressed()
 {
   if (digitalRead(TRIGGER_PIN) == LOW)

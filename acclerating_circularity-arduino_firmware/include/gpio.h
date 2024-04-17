@@ -12,6 +12,7 @@
 #define BUTTON_3_PIN 0
 #define BUTTON_4_PIN 0
 #define BUTTON_5_PIN 0
+#define START_BUTTON_PIN 0
 
 #define BUTTON_0_LED_PIN 22
 #define BUTTON_1_LED_PIN 0
@@ -19,6 +20,7 @@
 #define BUTTON_3_LED_PIN 0
 #define BUTTON_4_LED_PIN 0
 #define BUTTON_5_LED_PIN 0
+#define START_BUTTON_LED_PIN 0
 
 #define TRIGGER_PIN 2
 
@@ -50,6 +52,9 @@ String readNFC215();
 
 // check the button with the given id, returns True if the button is pressed, False otherwise
 bool readButton(Button button_id);
+
+// check the start button, returns True if the start button is pressed, False otherwise
+bool startButtonPressed();
 
 // check the trigger, returns True if the trigger is pressed, False otherwise
 bool triggerPressed();

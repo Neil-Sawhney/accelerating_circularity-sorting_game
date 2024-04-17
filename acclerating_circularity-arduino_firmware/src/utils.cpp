@@ -3,17 +3,25 @@
 #include "gpio.h"
 #include "serial.h"
 
-void waitForStatus()
+Status waitForStatus()
 {
   Status status = Status::NONE;
-  while (status != Status::READY)
+  while (status == Status::NONE)
   {
     status = getStatus();
-    if (status == Status::RESET)
-    {
-      clearBasket();
-    }
   }
+
+  return status;
+}
+
+void waitForStartButton()
+{
+  while (!startButtonPressed())
+  {
+    //TODO: flash the start button led
+  }
+  clearBasket();
+  writeSerial(Cmd::STATUS, Status::READY);
 }
 
 void waitForCard()
@@ -72,6 +80,7 @@ void turnOffAllLeds()
 
 void clearBasket()
 {
+  // TODO: switch from solenoids to two relays
   setSolenoids(true);
   delay(DOOR_TIME);
   setSolenoids(false);

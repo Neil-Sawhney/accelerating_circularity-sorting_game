@@ -1,6 +1,7 @@
 #pragma once
 #include <Arduino.h>
 #include "gpio.h"
+#include "serial.h"
 
 // TODO: set correctly
 //  time it takes for the disk to get from the shooter to the wall in milliseconds
@@ -11,11 +12,14 @@
 
 
 /*
- * wait until we get Cmd::STATUS, Status::READY from the serial port
- * indicating that the UI is ready to start the game
- * if we get Cmd::STATUS, Status::RESET, clear the basket and wait again
+ * wait until we get Cmd::STATUS from the serial port and return the Status
  */
-void waitForStatus();
+Status waitForStatus();
+
+/*
+ * wait until the start button is pressed and send Cmd::STATUS, Status::READY to the serial port and clear the basket
+ */
+void waitForStartButton();
 
 /*
  * wait until a card is detected and send its information to the serial port
