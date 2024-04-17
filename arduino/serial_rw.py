@@ -158,3 +158,17 @@ class SerialRW:
 
         logging.debug("Synchronization Error!! after get_target_hit")
         eDisp.displayError("Synchronization Error!!", "Please restart the game.")
+
+    def send_ready(self):
+        """Sends the ready signal to the arduino"""
+        self.ser.write(
+            (str(Cmd.STATUS.value) + "," + str(Status.READY.value) + "\n").encode()
+        )
+        logging.debug("TX:" + str(Cmd.STATUS.value) + "," + str(Status.READY.value))
+
+    def send_reset(self):
+        """Sends the reset signal to the arduino"""
+        self.ser.write(
+            (str(Cmd.STATUS.value) + "," + str(Status.RESET.value) + "\n").encode()
+        )
+        logging.debug("TX:" + str(Cmd.STATUS.value) + "," + str(Status.RESET.value))

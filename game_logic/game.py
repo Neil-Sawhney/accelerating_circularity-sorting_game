@@ -94,7 +94,7 @@ class Game:
         if target_hit:
             if self.tech_on:
                 # TODO: chagne the color too
-                # TODO: this will likely dissapear immediately, so fix that without blocking
+                # TODO: this dissapears immediately because there is no delay, so fix that without blocking
                 self.disp.set_info(
                     "TECHNOLOGY: ENABLED\n\n"
                     + self.curr_fabric
@@ -114,7 +114,6 @@ class Game:
                 self.update_high_score()
                 logging.debug("High score updated to: " + str(self.disp.score.value()))
 
-            self.game_state = GameState.WAITING_FOR_LOADED_MATERIAL
         elif target_hit is not None:
             if self.tech_on:
                 self.disp.set_info(
@@ -129,7 +128,10 @@ class Game:
                     + " was sorted incorrectly!"
                 )
             logging.debug("Incorrect fabric sorted, waiting for loaded material")
+
+        if target_hit is not None:
             self.game_state = GameState.WAITING_FOR_LOADED_MATERIAL
+            self.ard.send_ready()
 
     def end_game(self):
         # TODO: this will disappear immediately, so fix that (you can probably get away with blocking, but eh, not the best)
@@ -138,6 +140,7 @@ class Game:
         self.set_info("PRESS THE FLASHING BUTTON TO BEGIN!")
 
         self.game_state = GameState.WAITING_FOR_START
+        self.ard.send_reset()
 
     ############################
     # HELPER FUNCTIONS
