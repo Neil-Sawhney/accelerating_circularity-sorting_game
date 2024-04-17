@@ -93,7 +93,7 @@ class Game:
         target_hit = self.ard.get_target_hit()
         if target_hit:
             if self.tech_on:
-                # TODO: chagne the color too
+                # TODO: change the color too
                 # TODO: this dissapears immediately because there is no delay, so fix that without blocking
                 self.disp.set_info(
                     "TECHNOLOGY: ENABLED\n\n"
@@ -137,7 +137,7 @@ class Game:
         # TODO: this will disappear immediately, so fix that (you can probably get away with blocking, but eh, not the best)
         self.disp.set_info("GAME OVER!")
 
-        self.set_info("PRESS THE FLASHING BUTTON TO BEGIN!")
+        self.disp.set_info("PRESS THE FLASHING BUTTON TO BEGIN!")
 
         self.game_state = GameState.WAITING_FOR_START
         self.ard.send_reset()
@@ -155,7 +155,7 @@ class Game:
             pass
 
         with open("./logs/high_score.log", "w") as f:
-            f.write(int(new_score))
+            f.write(str(int(new_score)))
 
     def set_start_time(self):
         self.start_time = datetime.datetime.now()

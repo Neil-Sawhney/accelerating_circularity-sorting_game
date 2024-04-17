@@ -101,10 +101,11 @@ class SerialRW:
 
         cmd, message = self.read_data()
         if message == Status.READY:
+            logging.debug("Arduino is ready")
             return True
 
-        logging.debug("Synchronization Error!! after check_ready")
-        eDisp.displayError("Synchronization Error!!", "Please restart the game.")
+        # This is not a synchronization error because the game can end abruptly before the arduino checks for game status
+        logging.debug("Ignoring message: " + str(cmd) + "," + str(message))
         return False
 
     def get_fabric(self):

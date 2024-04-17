@@ -59,7 +59,9 @@ class MainWindow(QtWidgets.QMainWindow):
             with open("./logs/high_score.log", "r") as f:
                 high_score = int(f.read())
                 self.set_high_score(high_score)
-        except FileNotFoundError:
+        except:
+            logging.debug("Error reading high score file, setting high score to 0")
+            high_score = 0
             pass
 
         self.game_controller = game.Game(self)
