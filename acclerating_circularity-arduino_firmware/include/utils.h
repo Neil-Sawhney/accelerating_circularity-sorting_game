@@ -50,6 +50,6 @@ void waitForHit(Button targetId);
 void turnOffAllLeds();
 
 /*
- * turn on the solenoids for DOOR_TIME milliseconds
+ * open the door for DOOR_TIME milliseconds
  */
 void clearBasket();

@@ -80,8 +80,9 @@ void turnOffAllLeds()
 
 void clearBasket()
 {
-  // TODO: switch from solenoids to two relays
-  setSolenoids(true);
+  setMotorState(MotorState::OPENING);
   delay(DOOR_TIME);
-  setSolenoids(false);
+  setMotorState(MotorState::CLOSING);
+  delay(DOOR_TIME);
+  setMotorState(MotorState::IDLE);
 }

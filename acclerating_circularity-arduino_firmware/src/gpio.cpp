@@ -124,8 +124,21 @@ void illuminateButton(Button buttonId, bool state)
   }
 }
 
-void setSolenoids(bool state)
+void setMotorState(MotorState state)
 {
-  digitalWrite(SOLENOIDS_PIN, state);
+  switch (state)
+  {
+  case MotorState::IDLE:
+    digitalWrite(MOTOR_FORWARD_PIN, LOW);
+    digitalWrite(MOTOR_BACKWARD_PIN, LOW);
+    break;
+  case MotorState::OPENING:
+    digitalWrite(MOTOR_FORWARD_PIN, HIGH);
+    digitalWrite(MOTOR_BACKWARD_PIN, LOW);
+    break;
+  case MotorState::CLOSING:
+    digitalWrite(MOTOR_FORWARD_PIN, LOW);
+    digitalWrite(MOTOR_BACKWARD_PIN, HIGH);
+    break;
+  }
 }
-
