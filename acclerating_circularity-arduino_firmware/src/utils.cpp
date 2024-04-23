@@ -18,7 +18,7 @@ void waitForStartButton()
 {
   while (!startButtonPressed())
   {
-    //TODO: flash the start button led
+    //TODO: flash the start button led without blocking
   }
   clearBasket();
   writeSerial(Cmd::STATUS, Status::READY);
