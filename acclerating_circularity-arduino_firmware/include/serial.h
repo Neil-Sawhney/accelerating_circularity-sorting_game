@@ -22,7 +22,6 @@ enum class Status
 
 /*
  * Sets up the serial port.
- * Blocks until the serial port is ready.
  */
 void serial_init();
 

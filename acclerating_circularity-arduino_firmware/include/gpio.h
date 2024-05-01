@@ -1,31 +1,30 @@
 #pragma once
 #include <MFRC522.h>
 
-// TODO: set correctly
 //  NFC reader setup
 #define SS_PIN 9
 #define RST_PIN 8
 
-#define BUTTON_0_PIN 3
-#define BUTTON_1_PIN 0
-#define BUTTON_2_PIN 0
-#define BUTTON_3_PIN 0
-#define BUTTON_4_PIN 0
-#define BUTTON_5_PIN 0
-#define START_BUTTON_PIN 0
+#define BUTTON_0_PIN 42
+#define BUTTON_1_PIN 44
+#define BUTTON_2_PIN 46
+#define BUTTON_3_PIN 48
+#define BUTTON_4_PIN 45
+#define BUTTON_5_PIN 47
+#define START_BUTTON_PIN 49
 
-#define BUTTON_0_LED_PIN 22
-#define BUTTON_1_LED_PIN 0
-#define BUTTON_2_LED_PIN 0
-#define BUTTON_3_LED_PIN 0
-#define BUTTON_4_LED_PIN 0
-#define BUTTON_5_LED_PIN 0
-#define START_BUTTON_LED_PIN 0
+#define BUTTON_0_LED_PIN 30
+#define BUTTON_1_LED_PIN 32
+#define BUTTON_2_LED_PIN 34
+#define BUTTON_3_LED_PIN 36
+#define BUTTON_4_LED_PIN 33
+#define BUTTON_5_LED_PIN 35
+#define START_BUTTON_LED_PIN 37
 
-#define MOTOR_FORWARD_PIN 0
-#define MOTOR_BACKWARD_PIN 0
+#define MOTOR_FORWARD_PIN 2
+#define MOTOR_BACKWARD_PIN 3
 
-#define TRIGGER_PIN 2
+#define TRIGGER_PIN 53
 
 #define NUM_BUTTONS 6
 enum class Button

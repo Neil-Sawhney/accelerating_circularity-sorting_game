@@ -3,8 +3,6 @@ import logging
 import os
 from enum import Enum, auto
 
-import serial
-
 import arduino.serial_rw as arduino
 import default_parameters as params
 

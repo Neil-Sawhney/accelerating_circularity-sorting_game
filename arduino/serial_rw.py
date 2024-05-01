@@ -59,6 +59,7 @@ class SerialRW:
             cmd: the command from the arduino
             message: the message from the arduino
         """
+        # FIXME: THIS CODE STILL BLOCKS?, NEEDS TO BE FIXED
         if not self.ser.in_waiting:
             return None, None
 

@@ -16,9 +16,13 @@ Status waitForStatus()
 
 void waitForStartButton()
 {
+  // This toggle allows us to block for less time so that the button is more responsive
+  bool toggle_light = HIGH;
   while (!startButtonPressed())
   {
-    //TODO: flash the start button led without blocking
+    digitalWrite(START_BUTTON_LED_PIN, toggle_light);
+    toggle_light = !toggle_light;
+    delay(50);
   }
   clearBasket();
   writeSerial(Cmd::STATUS, Status::READY);

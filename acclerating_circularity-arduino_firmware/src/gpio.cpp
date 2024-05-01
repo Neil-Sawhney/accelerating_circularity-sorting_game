@@ -12,6 +12,8 @@ void gpio_init()
   {
     pinMode(buttonPinMap[i], INPUT_PULLUP);
     pinMode(buttonLedPinMap[i], OUTPUT);
+    pinMode(START_BUTTON_PIN, INPUT_PULLUP);
+    pinMode(START_BUTTON_LED_PIN, OUTPUT);
   }
 
   turnOffAllLeds();
