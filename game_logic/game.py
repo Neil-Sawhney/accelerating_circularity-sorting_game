@@ -3,8 +3,6 @@ import logging
 import os
 import time
 from enum import Enum, auto
-from time import perf_counter
-import asyncio
 
 import arduino.serial_rw as arduino
 import default_parameters as params
@@ -24,7 +22,7 @@ class Game:
         self.game_state = GameState.WAITING_FOR_START
 
         # TODO: right now theres no way to turn the technology off via the communication with the arduino
-        self.tech_on = False
+        self.tech_on = True
 
         self.set_start_time()
         logging.debug("Waiting for start")
@@ -60,6 +58,15 @@ class Game:
             logging.debug("Start button pressed, waiting for loaded material")
             self.set_start_time()
 
+            # if self.tech_on:
+            #     self.disp.set_info(
+            #         "TECHNOLOGY: ENABLED\n\nFeel the material and shoot it into the correct button!"
+            #     )
+            # else:
+            #     self.disp.set_info(
+            #         "TECHNOLOGY: DISABLED\n\nFeel the material and shoot it into the correct button!"
+            #     )
+
     def update_progress(self):
         time = self.get_time()
         self.disp.set_time_left(params.TIME_LIMIT - time)
@@ -69,15 +76,6 @@ class Game:
             self.game_state = GameState.END_STATE
 
     def waiting_for_loaded_material(self):
-        if self.tech_on:
-            self.disp.set_info(
-                "TECHNOLOGY: ENABLED\n\nFeel the material and shoot it into the correct button!"
-            )
-        else:
-            self.disp.set_info(
-                "TECHNOLOGY: DISABLED\n\nFeel the material and shoot it into the correct button!"
-            )
-
         self.curr_fabric = self.ard.get_fabric()
         if self.curr_fabric is not None:
             self.ard.set_target(self.curr_fabric)
@@ -102,15 +100,13 @@ class Game:
                     "TECHNOLOGY: ENABLED\n\n"
                     + self.curr_fabric
                     + " was sorted correctly!"
-                )
-                asyncio.sleep(3)
+                ),
             else:
                 self.disp.set_info(
                     "TECHNOLOGY: DISABLED\n\n"
                     + self.curr_fabric
                     + " was sorted correctly!"
                 )
-                asyncio.sleep(3)
             logging.debug("Correct fabric sorted, waiting for loaded material")
             self.disp.set_score(self.disp.score.value() + 1)
 
@@ -141,7 +137,6 @@ class Game:
     def end_game(self):
         # TODO: this will disappear immediately, so fix that (you can probably get away with blocking, but eh, not the best)
         self.disp.set_info("GAME OVER!")
-        asyncio.sleep(5)
 
         self.disp.set_info("PRESS THE FLASHING BUTTON TO BEGIN!")
 
