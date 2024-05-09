@@ -11,14 +11,19 @@ Status waitForStatus()
     status = getStatus();
   }
 
+  writeSerial(Cmd::LOGGING, "Received status " + static_cast<int>(status));
   return status;
 }
 
 void waitForStartButton()
 {
+  // This toggle allows us to block for less time so that the button is more responsive
+  bool toggle_light = HIGH;
   while (!startButtonPressed())
   {
-    //TODO: flash the start button led
+    digitalWrite(START_BUTTON_LED_PIN, toggle_light);
+    toggle_light = !toggle_light;
+    delay(50);
   }
   clearBasket();
   writeSerial(Cmd::STATUS, Status::READY);
@@ -43,14 +48,18 @@ Button waitForTarget()
     targetId = getTarget();
   }
 
-  illuminateButton(targetId, true);
   return targetId;
 }
 
-void waitForTrigger()
+void waitForTrigger(Button targetId)
 {
   while (!triggerPressed())
   {
+    //FIXME: BLOCKING
+    illuminateButton(targetId, true);
+    delay(50);
+    illuminateButton(targetId, false);
+    delay(50);
   }
 }
 
@@ -62,6 +71,7 @@ void waitForHit(Button targetId)
     if (readButton(targetId))
     {
       writeSerial(Cmd::TARGET_HIT, true);
+      illuminateButton(targetId, false);
       return;
     }
   }
@@ -80,8 +90,9 @@ void turnOffAllLeds()
 
 void clearBasket()
 {
-  // TODO: switch from solenoids to two relays
-  setSolenoids(true);
+  setMotorState(MotorState::OPENING);
   delay(DOOR_TIME);
-  setSolenoids(false);
+  setMotorState(MotorState::CLOSING);
+  delay(DOOR_TIME);
+  setMotorState(MotorState::IDLE);
 }

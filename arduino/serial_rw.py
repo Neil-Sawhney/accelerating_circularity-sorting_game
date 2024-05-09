@@ -62,26 +62,29 @@ class SerialRW:
         if not self.ser.in_waiting:
             return None, None
 
-        # get a line from the arduino
-        serialData = self.ser.readline().decode("utf-8")
-        logging.debug("RX:" + serialData)
+        # get a line from the arduino without blocking
+        serialData = self.ser.read_until(b"\n", 100).decode("utf-8")
         rx_cmd, rx_message = serialData.split(",")
         cmd = Cmd(int(rx_cmd))
 
         # while the data recievied is a logging command, print the data to the log file and get the next line
         while cmd == Cmd.LOGGING:
-            logging.debug("Arduino:" + rx_message)
-
             # get a line from the arduino
-            serialData = self.ser.readline().decode("utf-8")
-            logging.debug("RX:" + serialData)
+            logging.debug("RX: [LOG] " + rx_message)
+
+            if not self.ser.in_waiting:
+                return None, None
+
+            serialData = self.ser.read_until(b"\n", 100).decode("utf-8")
             rx_cmd, rx_message = serialData.split(",")
             cmd = Cmd(int(rx_cmd))
 
         if cmd == Cmd.STATUS:
+            logging.debug("RX: [STATUS] " + rx_message)
             message = Status(int(rx_message))
         else:
             message = rx_message
+            logging.debug("RX [" + cmd.name + "]: " + message)
 
         return cmd, message
 
@@ -105,7 +108,9 @@ class SerialRW:
             return True
 
         # This is not a synchronization error because the game can end abruptly before the arduino checks for game status
-        logging.debug("Ignoring message: " + str(cmd) + "," + str(message))
+        if (cmd, message) != (None, None):
+            logging.debug("Ignoring message: " + str(cmd) + "," + str(message))
+
         return False
 
     def get_fabric(self):
@@ -125,8 +130,9 @@ class SerialRW:
             message = message.rstrip()
             return message
 
-        logging.debug("Synchronization Error!! after get_fabric")
-        eDisp.displayError("Synchronization Error!!", "Please restart the game.")
+        if (cmd, message) != (None, None):
+            logging.debug("Synchronization Error!! after get_fabric")
+            eDisp.displayError("Synchronization Error!!", "Please restart the game.")
 
     def set_target(self, fabric):
         """Sends the target to the arduino
@@ -138,7 +144,7 @@ class SerialRW:
         self.ser.write(
             (str(Cmd.TARGET.value) + "," + str(target.value) + "\n").encode()
         )
-        logging.debug("TX:" + str(Cmd.TARGET.value) + "," + str(target.value))
+        logging.debug("TX: [TARGET] " + str(target.value))
 
     def get_target_hit(self):
         """Checks if the correct target was hit or missed by the player
@@ -149,10 +155,10 @@ class SerialRW:
             None: if no data is available
         """
 
-        if not self.ser.in_waiting:
-            return None
-
         cmd, message = self.read_data()
+
+        if (cmd, message) == (None, None):
+            return None
 
         if cmd == Cmd.TARGET_HIT:
             return int(message)
@@ -165,11 +171,11 @@ class SerialRW:
         self.ser.write(
             (str(Cmd.STATUS.value) + "," + str(Status.READY.value) + "\n").encode()
         )
-        logging.debug("TX:" + str(Cmd.STATUS.value) + "," + str(Status.READY.value))
+        logging.debug("TX: [STATUS] " + str(Status.READY.value))
 
     def send_reset(self):
         """Sends the reset signal to the arduino"""
         self.ser.write(
             (str(Cmd.STATUS.value) + "," + str(Status.RESET.value) + "\n").encode()
         )
-        logging.debug("TX:" + str(Cmd.STATUS.value) + "," + str(Status.RESET.value))
+        logging.debug("TX: [STATUS] " + str(Status.RESET.value))

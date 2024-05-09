@@ -5,7 +5,7 @@
 
 // TODO: set correctly
 //  time it takes for the disk to get from the shooter to the wall in milliseconds
-#define TRAVEL_TIME 1000
+#define TRAVEL_TIME 1500
 
 // time it takes for the disks to slide under the door in milliseconds
 #define DOOR_TIME 1000
@@ -36,7 +36,7 @@ Button waitForTarget();
 /*
  * wait until the trigger is pressed
  */
-void waitForTrigger();
+void waitForTrigger(Button targetId);
 
 /*
  * wait until the target button is hit or the TRAVEL_TIME has passed
@@ -50,6 +50,6 @@ void waitForHit(Button targetId);
 void turnOffAllLeds();
 
 /*
- * turn on the solenoids for DOOR_TIME milliseconds
+ * open the door for DOOR_TIME milliseconds
  */
 void clearBasket();

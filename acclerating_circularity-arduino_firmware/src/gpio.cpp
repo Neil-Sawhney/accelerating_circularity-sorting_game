@@ -12,6 +12,8 @@ void gpio_init()
   {
     pinMode(buttonPinMap[i], INPUT_PULLUP);
     pinMode(buttonLedPinMap[i], OUTPUT);
+    pinMode(START_BUTTON_PIN, INPUT_PULLUP);
+    pinMode(START_BUTTON_LED_PIN, OUTPUT);
   }
 
   turnOffAllLeds();
@@ -61,9 +63,10 @@ String readNFC215()
       }
     }
     mfrc522.PICC_HaltA();
+    return nfcInfo;
   }
 
-  return nfcInfo;
+  return "none";
 }
 
 bool readButton(Button button_id)
@@ -86,7 +89,6 @@ bool startButtonPressed()
 {
   if (digitalRead(START_BUTTON_PIN) == LOW)
   {
-    writeSerial(Cmd::LOGGING, "start button pressed");
     return true;
   }
 
@@ -114,18 +116,23 @@ void illuminateButton(Button buttonId, bool state)
   int ledPin = getButtonLedPin(buttonId);
   digitalWrite(ledPin, state);
 
-  if (state)
-  {
-    writeSerial(Cmd::LOGGING, "button" + String(static_cast<int>(buttonId)) + " on");
-  }
-  else
-  {
-    writeSerial(Cmd::LOGGING, "button" + String(static_cast<int>(buttonId)) + " off");
-  }
 }
 
-void setSolenoids(bool state)
+void setMotorState(MotorState state)
 {
-  digitalWrite(SOLENOIDS_PIN, state);
+  switch (state)
+  {
+  case MotorState::IDLE:
+    digitalWrite(MOTOR_FORWARD_PIN, LOW);
+    digitalWrite(MOTOR_BACKWARD_PIN, LOW);
+    break;
+  case MotorState::OPENING:
+    digitalWrite(MOTOR_FORWARD_PIN, HIGH);
+    digitalWrite(MOTOR_BACKWARD_PIN, LOW);
+    break;
+  case MotorState::CLOSING:
+    digitalWrite(MOTOR_FORWARD_PIN, LOW);
+    digitalWrite(MOTOR_BACKWARD_PIN, HIGH);
+    break;
+  }
 }
-

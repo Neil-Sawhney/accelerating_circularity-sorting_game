@@ -1,11 +1,10 @@
 import datetime
 import logging
 import os
+import time
 from enum import Enum, auto
 from time import perf_counter
 import asyncio
-
-import serial
 
 import arduino.serial_rw as arduino
 import default_parameters as params
@@ -29,6 +28,7 @@ class Game:
 
         self.set_start_time()
         logging.debug("Waiting for start")
+        self.ard.send_reset()
 
     def update(self):
         if self.game_state == GameState.WAITING_FOR_START:
@@ -41,6 +41,7 @@ class Game:
             self.waiting_for_trigger_press()
         elif self.game_state == GameState.END_STATE:
             self.end_game()
+        time.sleep(0.001)
 
     ############################
     # GAME LOGIC
@@ -56,7 +57,7 @@ class Game:
 
         if arduino_ready:
             self.game_state = GameState.WAITING_FOR_LOADED_MATERIAL
-            logging.debug("Material loaded, waiting for loaded material")
+            logging.debug("Start button pressed, waiting for loaded material")
             self.set_start_time()
 
     def update_progress(self):
@@ -144,6 +145,8 @@ class Game:
 
         self.disp.set_info("PRESS THE FLASHING BUTTON TO BEGIN!")
 
+        self.disp.set_time_left(params.TIME_LIMIT)
+        logging.debug("Waiting for start")
         self.game_state = GameState.WAITING_FOR_START
         self.ard.send_reset()
 
