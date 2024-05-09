@@ -23,7 +23,7 @@ void loop()
   waitForCard();
 
   Button targetId = waitForTarget();
-  waitForTrigger();
+  waitForTrigger(targetId);
   waitForHit(targetId);
 
   game_state = waitForStatus();

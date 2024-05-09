@@ -116,14 +116,6 @@ void illuminateButton(Button buttonId, bool state)
   int ledPin = getButtonLedPin(buttonId);
   digitalWrite(ledPin, state);
 
-  if (state)
-  {
-    writeSerial(Cmd::LOGGING, "button" + String(static_cast<int>(buttonId)) + " on");
-  }
-  else
-  {
-    writeSerial(Cmd::LOGGING, "button" + String(static_cast<int>(buttonId)) + " off");
-  }
 }
 
 void setMotorState(MotorState state)

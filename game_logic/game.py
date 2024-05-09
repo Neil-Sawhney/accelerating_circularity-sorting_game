@@ -52,7 +52,7 @@ class Game:
 
         if arduino_ready:
             self.game_state = GameState.WAITING_FOR_LOADED_MATERIAL
-            logging.debug("Material loaded, waiting for loaded material")
+            logging.debug("Start button pressed, waiting for loaded material")
             self.set_start_time()
 
     def update_progress(self):

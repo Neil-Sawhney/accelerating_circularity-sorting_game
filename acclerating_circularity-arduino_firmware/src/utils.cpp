@@ -47,14 +47,18 @@ Button waitForTarget()
     targetId = getTarget();
   }
 
-  illuminateButton(targetId, true);
   return targetId;
 }
 
-void waitForTrigger()
+void waitForTrigger(Button targetId)
 {
   while (!triggerPressed())
   {
+    //FIXME: BLOCKING
+    illuminateButton(targetId, true);
+    delay(50);
+    illuminateButton(targetId, false);
+    delay(50);
   }
 }
 
@@ -66,6 +70,7 @@ void waitForHit(Button targetId)
     if (readButton(targetId))
     {
       writeSerial(Cmd::TARGET_HIT, true);
+      illuminateButton(targetId, false);
       return;
     }
   }

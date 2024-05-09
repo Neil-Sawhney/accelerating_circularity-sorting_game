@@ -36,7 +36,7 @@ Button waitForTarget();
 /*
  * wait until the trigger is pressed
  */
-void waitForTrigger();
+void waitForTrigger(Button targetId);
 
 /*
  * wait until the target button is hit or the TRAVEL_TIME has passed
