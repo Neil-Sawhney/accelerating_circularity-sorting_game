@@ -63,9 +63,10 @@ String readNFC215()
       }
     }
     mfrc522.PICC_HaltA();
+    return nfcInfo;
   }
 
-  return nfcInfo;
+  return "none";
 }
 
 bool readButton(Button button_id)
@@ -88,7 +89,6 @@ bool startButtonPressed()
 {
   if (digitalRead(START_BUTTON_PIN) == LOW)
   {
-    writeSerial(Cmd::LOGGING, "start button pressed");
     return true;
   }
 

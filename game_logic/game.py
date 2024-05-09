@@ -138,6 +138,7 @@ class Game:
 
         self.disp.set_info("PRESS THE FLASHING BUTTON TO BEGIN!")
 
+        self.disp.set_time_left(params.TIME_LIMIT)
         self.game_state = GameState.WAITING_FOR_START
         self.ard.send_reset()
 

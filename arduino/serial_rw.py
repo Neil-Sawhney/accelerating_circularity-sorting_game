@@ -33,7 +33,7 @@ class Button(Enum):
 
 class SerialRW:
     def __init__(self):
-        self.ser = serial.Serial(timeout=0.1)
+        self.ser = serial.Serial()
 
         # if the serial port is not open, open it
         if not (self.ser.isOpen()):
@@ -62,8 +62,8 @@ class SerialRW:
         if not self.ser.in_waiting:
             return None, None
 
-        # get a line from the arduino
-        serialData = self.ser.readline().decode("utf-8")
+        # get a line from the arduino without blocking
+        serialData = self.ser.read_until(b"\n", 100).decode("utf-8")
         rx_cmd, rx_message = serialData.split(",")
         cmd = Cmd(int(rx_cmd))
 
@@ -75,7 +75,7 @@ class SerialRW:
             if not self.ser.in_waiting:
                 return None, None
 
-            serialData = self.ser.readline().decode("utf-8")
+            serialData = self.ser.read_until(b"\n", 100).decode("utf-8")
             rx_cmd, rx_message = serialData.split(",")
             cmd = Cmd(int(rx_cmd))
 
