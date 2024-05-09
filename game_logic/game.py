@@ -1,6 +1,7 @@
 import datetime
 import logging
 import os
+import time
 from enum import Enum, auto
 
 import arduino.serial_rw as arduino
@@ -38,6 +39,7 @@ class Game:
             self.waiting_for_trigger_press()
         elif self.game_state == GameState.END_STATE:
             self.end_game()
+        time.sleep(0.001)
 
     ############################
     # GAME LOGIC
@@ -139,6 +141,7 @@ class Game:
         self.disp.set_info("PRESS THE FLASHING BUTTON TO BEGIN!")
 
         self.disp.set_time_left(params.TIME_LIMIT)
+        logging.debug("Waiting for start")
         self.game_state = GameState.WAITING_FOR_START
         self.ard.send_reset()
 
