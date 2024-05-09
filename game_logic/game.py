@@ -2,6 +2,8 @@ import datetime
 import logging
 import os
 from enum import Enum, auto
+from time import perf_counter
+import asyncio
 
 import serial
 
@@ -100,12 +102,14 @@ class Game:
                     + self.curr_fabric
                     + " was sorted correctly!"
                 )
+                asyncio.sleep(3)
             else:
                 self.disp.set_info(
                     "TECHNOLOGY: DISABLED\n\n"
                     + self.curr_fabric
                     + " was sorted correctly!"
                 )
+                asyncio.sleep(3)
             logging.debug("Correct fabric sorted, waiting for loaded material")
             self.disp.set_score(self.disp.score.value() + 1)
 
@@ -136,6 +140,7 @@ class Game:
     def end_game(self):
         # TODO: this will disappear immediately, so fix that (you can probably get away with blocking, but eh, not the best)
         self.disp.set_info("GAME OVER!")
+        asyncio.sleep(5)
 
         self.disp.set_info("PRESS THE FLASHING BUTTON TO BEGIN!")
 
