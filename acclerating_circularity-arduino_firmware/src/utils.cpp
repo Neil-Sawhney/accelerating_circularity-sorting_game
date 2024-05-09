@@ -11,6 +11,7 @@ Status waitForStatus()
     status = getStatus();
   }
 
+  writeSerial(Cmd::LOGGING, "Received status " + static_cast<int>(status));
   return status;
 }
 

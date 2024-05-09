@@ -20,6 +20,7 @@ void loop()
     game_state = Status::READY;
   }
 
+  writeSerial(Cmd::LOGGING, "Waiting for card");
   waitForCard();
 
   Button targetId = waitForTarget();

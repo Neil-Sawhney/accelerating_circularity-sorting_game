@@ -42,6 +42,6 @@ Button getTarget();
 
 /*
  * Reads from the serial port and returns the status.
- * If there is nothing to read, return Status::ERROR.
+ * If there is nothing to read, return Status::NONE.
  */
 Status getStatus();

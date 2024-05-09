@@ -25,6 +25,7 @@ class Game:
 
         self.set_start_time()
         logging.debug("Waiting for start")
+        self.ard.send_reset()
 
     def update(self):
         if self.game_state == GameState.WAITING_FOR_START:
