@@ -29,7 +29,7 @@ void waitForStartButton()
     }
   }
   clearBasket();
-  writeSerial(Cmd::STATUS, Status::READY);
+  writeSerial(Cmd::STATUS, Status::TECH_OFF);
 }
 
 void waitForCard()
@@ -54,13 +54,13 @@ Button waitForTarget()
   return targetId;
 }
 
-void waitForTrigger(Button targetId)
+void waitForTrigger(Button targetId, Status techState)
 {
   unsigned long previousMillis = millis();
   bool toggle = false;
   while (!triggerPressed())
   {
-    if (millis() - previousMillis >= FLASH_PERIOD)
+    if (millis() - previousMillis >= FLASH_PERIOD && techState == Status::TECH_ON)
     {
       previousMillis = millis();
       toggle = !toggle;

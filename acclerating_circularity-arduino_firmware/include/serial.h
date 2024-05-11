@@ -14,7 +14,8 @@ enum class Cmd
 
 enum class Status
 {
-  READY,
+  TECH_OFF,
+  TECH_ON,
   RESET,
   NONE,
 };

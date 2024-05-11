@@ -3,7 +3,6 @@
 #include "gpio.h"
 #include "serial.h"
 
-// TODO: set correctly
 //  time it takes for the disk to get from the shooter to the wall in milliseconds
 #define TRAVEL_TIME 1500
 
@@ -30,15 +29,15 @@ void waitForCard();
 
 /*
  * wait until we get the target button id from the serial port
- * illuminates the target button if there is one
  * return the target button id or Button::NONE if there is no target
  */
 Button waitForTarget();
 
 /*
  * wait until the trigger is pressed
+ * flashes the target button if tech is on
  */
-void waitForTrigger(Button targetId);
+void waitForTrigger(Button targetId, Status techState);
 
 /*
  * wait until the target button is hit or the TRAVEL_TIME has passed

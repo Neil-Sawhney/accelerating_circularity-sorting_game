@@ -11,7 +11,6 @@ void setup()
   gpio_init();
 }
 
-//TODO: add functionality rto turn the tech on and off which basically means deciding wheter we should illuminate the target button or not
 void loop()
 {
   if (game_state == Status::RESET)
@@ -19,7 +18,7 @@ void loop()
     waitForStatus();
     waitForStartButton();
     writeSerial(Cmd::LOGGING, "Start button pressed");
-    game_state = Status::READY;
+    game_state = Status::TECH_OFF;
   }
 
   writeSerial(Cmd::LOGGING, "Waiting for card");
@@ -29,7 +28,7 @@ void loop()
   Button targetId = waitForTarget();
 
   writeSerial(Cmd::LOGGING, "Waiting for trigger");
-  waitForTrigger(targetId);
+  waitForTrigger(targetId, game_state);
   waitForHit(targetId);
 
   writeSerial(Cmd::LOGGING, "Waiting for status");
