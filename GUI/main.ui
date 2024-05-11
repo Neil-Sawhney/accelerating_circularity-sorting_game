@@ -18,6 +18,10 @@
   <property name="windowTitle">
    <string>Accelerating Circularity - Sorting Game</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../assets/pics/icon.png</normaloff>../assets/pics/icon.png</iconset>
+  </property>
   <property name="styleSheet">
    <string notr="true">QMenuBar{
 	background-color: #00FFFF;
@@ -394,7 +398,7 @@ color: #ed008c;
            <property name="font">
             <font>
              <family>Arimo</family>
-             <pointsize>50</pointsize>
+             <pointsize>80</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -405,7 +409,7 @@ color: #ed008c;
            </property>
            <property name="styleSheet">
             <string notr="true">color: #fef100;
-font: 75 italic bold 50pt &quot;Arimo&quot;;</string>
+font: 75 italic bold 80pt &quot;Arimo&quot;;</string>
            </property>
            <property name="maximum">
             <number>180</number>
