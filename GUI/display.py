@@ -3,6 +3,7 @@ import sys
 
 from PyQt5 import QtCore, QtWidgets, uic
 from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtMultimedia import QSound
 
 import default_parameters as params
 import game_logic.game as game
@@ -33,7 +34,6 @@ class GameThread(QThread):
 
     def run(self):
         while True:
-            # Call your game logic function here
             self.game_controller.update()
 
             # Emit the signal to update the UI
@@ -54,6 +54,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.bar.setMaximum(params.TIME_LIMIT)
 
         self.set_info("Initializing...")
+
+        self.background_music = QSound("sounds/background_music.mp3")
+        self.correct_sound = QSound("sounds/correct.wav")
+        self.wrong_sound = QSound("sounds/wrong.wav")
+
+        self.background_music.setLoops(-1)
+        self.background_music.play()
 
         # Load the high score
         try:
