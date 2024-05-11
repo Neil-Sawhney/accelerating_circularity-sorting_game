@@ -63,11 +63,11 @@ class Game:
 
             if self.tech_on:
                 self.disp.set_info(
-                    "TECHNOLOGY: ENABLED\n\nFeel the material and shoot it into the correct button!"
+                    "TECHNOLOGY: ENABLED\n\nFEEL THE MATERIAL AND SHOOT IT INTO THE CORRECT BUTTON!"
                 )
             else:
                 self.disp.set_info(
-                    "TECHNOLOGY: DISABLED\n\nFeel the material and shoot it into the correct button!"
+                    "TECHNOLOGY: DISABLED\n\nFEEL THE MATERIAL AND SHOOT IT INTO THE CORRECT BUTTON!"
                 )
 
     def update_progress(self):
@@ -143,12 +143,12 @@ class Game:
 
         if self.tech_on:
             self.set_text_with_delay(
-                "TECHNOLOGY: ENABLED\n\nFeel the material and shoot it into the correct button!",
+                "TECHNOLOGY: ENABLED\n\nFEEL THE MATERIAL AND SHOOT IT INTO THE CORRECT BUTTON!",
                 2000,
             )
         else:
             self.set_text_with_delay(
-                "TECHNOLOGY: DISABLED\n\nFeel the material and shoot it into the correct button!",
+                "TECHNOLOGY: DISABLED\n\nFEEL THE MATERIAL AND SHOOT IT INTO THE CORRECT BUTTON!",
                 2000,
             )
         self.game_state = GameState.WAITING_FOR_LOADED_MATERIAL

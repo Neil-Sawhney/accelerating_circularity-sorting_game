@@ -3,6 +3,7 @@ import sys
 
 from PyQt5 import QtCore, QtWidgets, uic
 from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtMultimedia import QSound
 
 import default_parameters as params
@@ -53,11 +54,17 @@ class MainWindow(QtWidgets.QMainWindow):
         # Sets the maximum time to 180 seconds
         self.bar.setMaximum(params.TIME_LIMIT)
 
-        self.set_info("Initializing...")
+        self.set_info("INITIALIZING...")
 
-        self.background_music = QSound("sounds/background_music.wav")
-        self.correct_sound = QSound("sounds/correct.wav")
-        self.wrong_sound = QSound("sounds/wrong.wav")
+        # set high_score_label and score_label to images
+        high_score_image = QPixmap("assets/pics/high_score.png")
+        score_image = QPixmap("assets/pics/score.png")
+        self.high_score_label.setPixmap(high_score_image)
+        self.score_label.setPixmap(score_image)
+
+        self.background_music = QSound("assets/sounds/background_music.wav")
+        self.correct_sound = QSound("assets/sounds/correct.wav")
+        self.wrong_sound = QSound("assets/sounds/wrong.wav")
 
         self.background_music.setLoops(-1)
         self.background_music.play()
