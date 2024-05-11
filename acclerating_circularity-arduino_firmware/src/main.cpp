@@ -16,6 +16,7 @@ void loop()
 {
   if (game_state == Status::RESET)
   {
+    waitForStatus();
     waitForStartButton();
     writeSerial(Cmd::LOGGING, "Start button pressed");
     game_state = Status::READY;

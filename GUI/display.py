@@ -52,7 +52,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Sets the maximum time to 180 seconds
         self.bar.setMaximum(params.TIME_LIMIT)
-        self.set_info("PRESS THE FLASHING BUTTON TO BEGIN!")
+
+        self.set_info("Initializing...")
 
         # Load the high score
         try:
@@ -72,15 +73,19 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def set_info(self, text):
         self.info.setText(text)
+        QtWidgets.QApplication.processEvents()
 
     def set_score(self, score):
         self.score.display(score)
+        QtWidgets.QApplication.processEvents()
 
     def set_high_score(self, high_score):
         self.high_score.display(high_score)
+        QtWidgets.QApplication.processEvents()
 
     def set_time_left(self, time_left):
         self.bar.setValue(int(time_left))
+        QtWidgets.QApplication.processEvents()
 
 
 def main():

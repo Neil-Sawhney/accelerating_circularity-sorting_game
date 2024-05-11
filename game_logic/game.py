@@ -27,6 +27,7 @@ class Game:
         self.set_start_time()
         logging.debug("Waiting for start")
         self.ard.send_reset()
+        self.disp.set_info("PRESS THE FLASHING BUTTON TO BEGIN!")
 
     def update(self):
         if self.game_state == GameState.WAITING_FOR_START:
@@ -39,7 +40,7 @@ class Game:
             self.waiting_for_trigger_press()
         elif self.game_state == GameState.END_STATE:
             self.end_game()
-        time.sleep(0.001)
+        # time.sleep(0.1)
 
     ############################
     # GAME LOGIC
@@ -58,17 +59,18 @@ class Game:
             logging.debug("Start button pressed, waiting for loaded material")
             self.set_start_time()
 
-            # if self.tech_on:
-            #     self.disp.set_info(
-            #         "TECHNOLOGY: ENABLED\n\nFeel the material and shoot it into the correct button!"
-            #     )
-            # else:
-            #     self.disp.set_info(
-            #         "TECHNOLOGY: DISABLED\n\nFeel the material and shoot it into the correct button!"
-            #     )
+            if self.tech_on:
+                self.disp.set_info(
+                    "TECHNOLOGY: ENABLED\n\nFeel the material and shoot it into the correct button!"
+                )
+            else:
+                self.disp.set_info(
+                    "TECHNOLOGY: DISABLED\n\nFeel the material and shoot it into the correct button!"
+                )
 
     def update_progress(self):
         time = self.get_time()
+
         self.disp.set_time_left(params.TIME_LIMIT - time)
 
         if time > params.TIME_LIMIT:
@@ -128,22 +130,26 @@ class Game:
                     + self.curr_fabric
                     + " was sorted incorrectly!"
                 )
+            self.disp.set_score(self.disp.score.value() - 1)
             logging.debug("Incorrect fabric sorted, waiting for loaded material")
 
-        if target_hit is not None:
-            self.game_state = GameState.WAITING_FOR_LOADED_MATERIAL
-            self.ard.send_ready()
+        if target_hit is None:
+            return
+
+        self.game_state = GameState.WAITING_FOR_LOADED_MATERIAL
+        self.ard.send_ready()
 
     def end_game(self):
-        # TODO: this will disappear immediately, so fix that (you can probably get away with blocking, but eh, not the best)
-        self.disp.set_info("GAME OVER!")
-
-        self.disp.set_info("PRESS THE FLASHING BUTTON TO BEGIN!")
-
         self.disp.set_time_left(params.TIME_LIMIT)
-        logging.debug("Waiting for start")
+        self.disp.set_score(0)
+
         self.game_state = GameState.WAITING_FOR_START
         self.ard.send_reset()
+
+        # TODO: this will disappear immediately, so fix that (you can probably get away with blocking, but eh, not the best)
+        self.disp.set_info("GAME OVER!")
+        self.disp.set_info("PRESS THE FLASHING BUTTON TO BEGIN!")
+        logging.debug("Waiting for start")
 
     ############################
     # HELPER FUNCTIONS

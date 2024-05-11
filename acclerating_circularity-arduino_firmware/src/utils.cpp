@@ -11,19 +11,22 @@ Status waitForStatus()
     status = getStatus();
   }
 
-  writeSerial(Cmd::LOGGING, "Received status " + static_cast<int>(status));
+  writeSerial(Cmd::LOGGING, "Received status " + String(static_cast<int>(status)));
   return status;
 }
 
 void waitForStartButton()
 {
-  // This toggle allows us to block for less time so that the button is more responsive
-  bool toggle_light = HIGH;
+  unsigned long previousMillis = millis();
+  bool toggle = false;
   while (!startButtonPressed())
   {
-    digitalWrite(START_BUTTON_LED_PIN, toggle_light);
-    toggle_light = !toggle_light;
-    delay(50);
+    if (millis() - previousMillis >= FLASH_PERIOD)
+    {
+      previousMillis = millis();
+      toggle = !toggle;
+      digitalWrite(START_BUTTON_LED_PIN, toggle);
+    }
   }
   clearBasket();
   writeSerial(Cmd::STATUS, Status::READY);
@@ -53,13 +56,16 @@ Button waitForTarget()
 
 void waitForTrigger(Button targetId)
 {
+  unsigned long previousMillis = millis();
+  bool toggle = false;
   while (!triggerPressed())
   {
-    //FIXME: BLOCKING
-    illuminateButton(targetId, true);
-    delay(50);
-    illuminateButton(targetId, false);
-    delay(50);
+    if (millis() - previousMillis >= FLASH_PERIOD)
+    {
+      previousMillis = millis();
+      toggle = !toggle;
+      illuminateButton(targetId, toggle);
+    }
   }
 }
 
@@ -72,6 +78,9 @@ void waitForHit(Button targetId)
     {
       writeSerial(Cmd::TARGET_HIT, true);
       illuminateButton(targetId, false);
+
+      // wait the remaining time (RFID reader breaks if we dont do this)
+      delay(TRAVEL_TIME - (millis() - startTime));
       return;
     }
   }

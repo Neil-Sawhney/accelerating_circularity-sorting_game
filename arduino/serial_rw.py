@@ -1,4 +1,5 @@
 import logging
+import time
 from enum import Enum
 
 import serial
@@ -40,6 +41,10 @@ class SerialRW:
             try:
                 self.ser = serial.Serial(params.ARDUINO_COMPORT, 9600)
                 logging.info("Opened arduino serial port: " + params.ARDUINO_COMPORT)
+
+                # wait for serial port to open
+                time.sleep(2)
+
             except serial.SerialException:
                 errormsg = (
                     "Could not open arduino serial port: " + params.ARDUINO_COMPORT
@@ -65,6 +70,7 @@ class SerialRW:
         # get a line from the arduino without blocking
         serialData = self.ser.read_until(b"\n", 100).decode("utf-8")
         rx_cmd, rx_message = serialData.split(",")
+        rx_message = rx_message.rstrip()
         cmd = Cmd(int(rx_cmd))
 
         # while the data recievied is a logging command, print the data to the log file and get the next line
@@ -77,14 +83,16 @@ class SerialRW:
 
             serialData = self.ser.read_until(b"\n", 100).decode("utf-8")
             rx_cmd, rx_message = serialData.split(",")
+            rx_message = rx_message.rstrip()
+
             cmd = Cmd(int(rx_cmd))
 
         if cmd == Cmd.STATUS:
             logging.debug("RX: [STATUS] " + rx_message)
             message = Status(int(rx_message))
         else:
+            logging.debug("RX [" + cmd.name + "]: " + rx_message)
             message = rx_message
-            logging.debug("RX [" + cmd.name + "]: " + message)
 
         return cmd, message
 
@@ -174,7 +182,12 @@ class SerialRW:
         logging.debug("TX: [STATUS] " + str(Status.READY.value))
 
     def send_reset(self):
-        """Sends the reset signal to the arduino"""
+        """Restarts the arduino and send the reset command"""
+        self.ser.close()
+        time.sleep(2)
+        self.ser.open()
+        time.sleep(2)
+
         self.ser.write(
             (str(Cmd.STATUS.value) + "," + str(Status.RESET.value) + "\n").encode()
         )

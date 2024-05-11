@@ -10,6 +10,8 @@
 // time it takes for the disks to slide under the door in milliseconds
 #define DOOR_TIME 1000
 
+#define FLASH_PERIOD 100
+
 
 /*
  * wait until we get Cmd::STATUS from the serial port and return the Status
