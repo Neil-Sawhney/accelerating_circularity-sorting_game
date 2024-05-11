@@ -23,8 +23,7 @@ class Game:
         self.ard = arduino.SerialRW()
         self.game_state = GameState.WAITING_FOR_START
 
-        # TODO: right now theres no way to turn the technology off via the communication with the arduino
-        self.tech_on = True
+        self.tech_on = False
 
         self.set_start_time()
         logging.debug("Waiting for start")
@@ -75,6 +74,13 @@ class Game:
 
         self.disp.set_time_left(params.TIME_LIMIT - time)
 
+        if time > params.TIME_LIMIT / 2:
+            logging.debug("Enabling technology")
+            self.disp.set_info(
+                "TECHNOLOGY ENABLED!!! THE SCANNER WILL DETECT THE MATERIAL BEFORE YOU SHOOT!"
+            )
+            self.tech_on = True
+
         if time > params.TIME_LIMIT:
             logging.debug("Time limit reached, game over")
             self.game_state = GameState.END_STATE
@@ -100,7 +106,6 @@ class Game:
         if target_hit:
             if self.tech_on:
                 # TODO: change the color too
-                # TODO: this dissapears immediately because there is no delay, so fix that without blocking
                 self.disp.set_info(
                     "TECHNOLOGY: ENABLED\n\n"
                     + self.curr_fabric
@@ -146,13 +151,14 @@ class Game:
                 "TECHNOLOGY: ENABLED\n\nFEEL THE MATERIAL AND SHOOT IT INTO THE CORRECT BUTTON!",
                 2000,
             )
+            self.ard.send_TECH_ON()
         else:
             self.set_text_with_delay(
                 "TECHNOLOGY: DISABLED\n\nFEEL THE MATERIAL AND SHOOT IT INTO THE CORRECT BUTTON!",
                 2000,
             )
+            self.ard.send_TECH_OFF()
         self.game_state = GameState.WAITING_FOR_LOADED_MATERIAL
-        self.ard.send_ready()
 
     def end_game(self):
         self.disp.set_time_left(params.TIME_LIMIT)
@@ -161,9 +167,8 @@ class Game:
         self.game_state = GameState.WAITING_FOR_START
         self.ard.send_reset()
 
-        # TODO: this will disappear immediately, so fix that (you can probably get away with blocking, but eh, not the best)
         self.disp.set_info("GAME OVER!")
-        self.disp.set_info("PRESS THE FLASHING BUTTON TO BEGIN!")
+        self.set_text_with_delay("PRESS THE FLASHING BUTTON TO BEGIN!", 2000)
         logging.debug("Waiting for start")
 
     ############################

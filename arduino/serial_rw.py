@@ -17,7 +17,8 @@ class Cmd(Enum):
 
 
 class Status(Enum):
-    READY = 0
+    TECH_OFF = 0
+    TECH_ON = 0
     RESET = 1
     NONE = 2
 
@@ -174,12 +175,19 @@ class SerialRW:
         logging.debug("Synchronization Error!! after get_target_hit")
         eDisp.displayError("Synchronization Error!!", "Please restart the game.")
 
-    def send_ready(self):
-        """Sends the ready signal to the arduino"""
+    def send_TECH_OFF(self):
+        """Sends the tech off signal to the arduino"""
         self.ser.write(
-            (str(Cmd.STATUS.value) + "," + str(Status.READY.value) + "\n").encode()
+            (str(Cmd.STATUS.value) + "," + str(Status.TECH_OFF.value) + "\n").encode()
         )
-        logging.debug("TX: [STATUS] " + str(Status.READY.value))
+        logging.debug("TX: [STATUS] " + str(Status.TECH_OFF.value))
+
+    def send_TECH_ON(self):
+        """Sends the tech on signal to the arduino"""
+        self.ser.write(
+            (str(Cmd.STATUS.value) + "," + str(Status.TECH_ON.value) + "\n").encode()
+        )
+        logging.debug("TX: [STATUS] " + str(Status.TECH_ON.value))
 
     def send_reset(self):
         """Restarts the arduino and send the reset command"""
