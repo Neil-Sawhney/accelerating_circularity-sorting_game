@@ -55,7 +55,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.set_info("Initializing...")
 
-        self.background_music = QSound("sounds/background_music.mp3")
+        self.background_music = QSound("sounds/background_music.wav")
         self.correct_sound = QSound("sounds/correct.wav")
         self.wrong_sound = QSound("sounds/wrong.wav")
 
@@ -93,6 +93,12 @@ class MainWindow(QtWidgets.QMainWindow):
     def set_time_left(self, time_left):
         self.bar.setValue(int(time_left))
         QtWidgets.QApplication.processEvents()
+
+    def play_correct_sound(self):
+        self.correct_sound.play()
+
+    def play_wrong_sound(self):
+        self.wrong_sound.play()
 
 
 def main():

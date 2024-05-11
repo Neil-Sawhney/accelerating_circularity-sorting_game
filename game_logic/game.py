@@ -113,6 +113,7 @@ class Game:
                     + " was sorted correctly!"
                 )
             logging.debug("Correct fabric sorted, waiting for loaded material")
+            self.disp.play_correct_sound()
             self.disp.set_score(self.disp.score.value() + 1)
 
             # update high score
@@ -134,6 +135,7 @@ class Game:
                     + " was sorted incorrectly!"
                 )
             self.disp.set_score(self.disp.score.value() - 1)
+            self.disp.play_wrong_sound()
             logging.debug("Incorrect fabric sorted, waiting for loaded material")
 
         if target_hit is None:
