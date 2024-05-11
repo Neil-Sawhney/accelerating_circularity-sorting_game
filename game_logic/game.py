@@ -4,6 +4,8 @@ import os
 import time
 from enum import Enum, auto
 
+from PyQt5.QtCore import QTimer
+
 import arduino.serial_rw as arduino
 import default_parameters as params
 
@@ -84,12 +86,13 @@ class Game:
 
             if self.tech_on:
                 self.disp.set_info(
-                    "TECHNOLOGY: ENABLED\n\n" + self.curr_fabric + " was detected!"
-                )
+                    "TECHNOLOGY: ENABLED\n\n" + self.curr_fabric + " detected!"
+                ),
 
             logging.debug(
                 "Fabric detected: " + self.curr_fabric + ", waiting for trigger press"
             )
+
             self.game_state = GameState.WAITING_FOR_TRIGGER_PRESS
 
     def waiting_for_trigger_press(self):
@@ -136,6 +139,16 @@ class Game:
         if target_hit is None:
             return
 
+        if self.tech_on:
+            self.set_text_with_delay(
+                "TECHNOLOGY: ENABLED\n\nFeel the material and shoot it into the correct button!",
+                2000,
+            )
+        else:
+            self.set_text_with_delay(
+                "TECHNOLOGY: DISABLED\n\nFeel the material and shoot it into the correct button!",
+                2000,
+            )
         self.game_state = GameState.WAITING_FOR_LOADED_MATERIAL
         self.ard.send_ready()
 
@@ -171,3 +184,12 @@ class Game:
 
     def get_time(self):
         return (datetime.datetime.now() - self.start_time).total_seconds()
+
+    def set_text_with_delay(self, text, delay):
+        """sets the text on the display for a certain amount of time
+
+        Args:
+            text (str): the text to display
+            display_time (int): the time in milliseconds to display the text
+        """
+        QTimer.singleShot(delay, lambda: self.disp.set_info(text))
