@@ -29,7 +29,7 @@ void waitForStartButton()
     }
   }
   clearBasket();
-  writeSerial(Cmd::STATUS, Status::TECH_OFF);
+  writeSerial(Cmd::STATUS, Status::READY);
 }
 
 void waitForCard()

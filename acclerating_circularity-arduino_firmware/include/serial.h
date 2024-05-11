@@ -16,6 +16,7 @@ enum class Status
 {
   TECH_OFF,
   TECH_ON,
+  READY,
   RESET,
   NONE,
 };

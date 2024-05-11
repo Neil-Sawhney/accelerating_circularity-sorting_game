@@ -18,9 +18,10 @@ class Cmd(Enum):
 
 class Status(Enum):
     TECH_OFF = 0
-    TECH_ON = 0
-    RESET = 1
-    NONE = 2
+    TECH_ON = 1
+    READY = 2
+    RESET = 3
+    NONE = 4
 
 
 class Button(Enum):
