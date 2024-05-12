@@ -109,13 +109,13 @@ class Game:
                 self.disp.set_info(
                     "TECHNOLOGY: ENABLED\n\n"
                     + self.curr_fabric
-                    + " was sorted correctly!"
+                    + " WAS SORTED CORRECTLY!"
                 ),
             else:
                 self.disp.set_info(
                     "TECHNOLOGY: DISABLED\n\n"
                     + self.curr_fabric
-                    + " was sorted correctly!"
+                    + " WAS SORTED CORRECTLY!"
                 )
             logging.debug("Correct fabric sorted, waiting for loaded material")
             self.disp.play_correct_sound()
@@ -131,17 +131,17 @@ class Game:
                 self.disp.set_info(
                     "TECHNOLOGY: ENABLED\n\n"
                     + self.curr_fabric
-                    + " was sorted incorrectly!"
+                    + " WAS SORTED INCORRECTLY!"
                 )
             else:
                 self.disp.set_info(
                     "TECHNOLOGY: DISABLED\n\n"
                     + self.curr_fabric
-                    + " was sorted incorrectly!"
+                    + " WAS SORTED INCORRECTLY!"
                 )
             self.disp.set_score(self.disp.score.value() - 1)
             self.disp.play_wrong_sound()
-            logging.debug("Incorrect fabric sorted, waiting for loaded material")
+            logging.debug("INCORRECT FABRIC SORTED, WAITING FOR LOADED MATERIAL")
 
         if target_hit is None:
             return
