@@ -77,7 +77,7 @@ class Game:
         if time > params.TIME_LIMIT / 2 and not self.tech_on:
             logging.debug("Enabling technology")
             self.disp.set_info(
-                "TECHNOLOGY ENABLED!!! THE SCANNER WILL DETECT THE MATERIAL BEFORE YOU SHOOT!"
+                "TECHNOLOGY ENABLED!!!\nTHE SCANNER WILL DETECT THE MATERIAL BEFORE YOU SHOOT!"
             )
             self.tech_on = True
 
