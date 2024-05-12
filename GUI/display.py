@@ -53,6 +53,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Sets the maximum time to 180 seconds
         self.bar.setMaximum(params.TIME_LIMIT)
+        self.bar.setValue(params.TIME_LIMIT)
 
         self.set_info("INITIALIZING...")
 

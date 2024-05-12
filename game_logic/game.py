@@ -74,7 +74,7 @@ class Game:
 
         self.disp.set_time_left(params.TIME_LIMIT - time)
 
-        if time > params.TIME_LIMIT / 2:
+        if time > params.TIME_LIMIT / 2 and not self.tech_on:
             logging.debug("Enabling technology")
             self.disp.set_info(
                 "TECHNOLOGY ENABLED!!! THE SCANNER WILL DETECT THE MATERIAL BEFORE YOU SHOOT!"

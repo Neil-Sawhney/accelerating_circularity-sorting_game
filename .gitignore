@@ -6,3 +6,4 @@ main.exe
 *.pyc
 **/__pycache__/
 logs/**
+debug/**
