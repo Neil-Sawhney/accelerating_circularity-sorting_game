@@ -141,10 +141,8 @@ class SerialRW:
             return message
 
         if (cmd, message) != (None, None):
-            # TODO uncomment
-            # logging.debug("Synchronization Error!! after get_fabric")
-            # eDisp.displayError("Synchronization Error!!", "Please restart the game.")
-            pass
+            logging.debug("Synchronization Error!! after get_fabric")
+            eDisp.displayError("Synchronization Error!!", "Please restart the game.")
 
     def set_target(self, fabric):
         """Sends the target to the arduino
