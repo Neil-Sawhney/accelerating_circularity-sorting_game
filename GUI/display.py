@@ -2,9 +2,8 @@ import logging
 import sys
 
 from PyQt5 import QtCore, QtWidgets, uic
-from PyQt5.QtCore import QFileInfo, QThread, QUrl, pyqtSignal
+from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtMultimedia import QSoundEffect
 
 import default_parameters as params
 import game_logic.game as game
@@ -63,33 +62,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.high_score_label.setPixmap(high_score_image)
         self.score_label.setPixmap(score_image)
 
-        # self.background_music = QSoundEffect()
-        # self.background_music.setSource(
-        #     QUrl.fromLocalFile(
-        #         QFileInfo("assets/sounds/background_music.wav").absoluteFilePath()
-        #     )
-        # )
-        # self.background_music.setVolume(0.1)
-        # self.background_music.setLoopCount(-2)  # -2 is infinite for some reason...
-        # self.background_music.play()
-
-        self.correct_sound = QSoundEffect()
-        self.correct_sound.setSource(
-            QUrl.fromLocalFile(
-                QFileInfo("assets/sounds/correct.wav").absoluteFilePath()
-            )
-        )
-        self.wrong_sound = QSoundEffect()
-        self.wrong_sound.setSource(
-            QUrl.fromLocalFile(QFileInfo("assets/sounds/wrong.wav").absoluteFilePath())
-        )
-        self.scanned_sound = QSoundEffect()
-        self.scanned_sound.setSource(
-            QUrl.fromLocalFile(
-                QFileInfo("assets/sounds/scanned.wav").absoluteFilePath()
-            )
-        )
-
         # Load the high score
         try:
             with open("./logs/high_score.log", "r") as f:
@@ -122,14 +94,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.bar.setValue(int(time_left))
         QtWidgets.QApplication.processEvents()
 
-    def play_correct_sound(self):
-        self.correct_sound.play()
-
-    def play_wrong_sound(self):
-        self.wrong_sound.play()
-
-    def play_scanned_sound(self):
-        self.scanned_sound.play()
+    def process_events(self):
+        QtWidgets.QApplication.processEvents()
 
 
 def main():

@@ -34,6 +34,7 @@ void waitForStartButton()
 
 void waitForCard()
 {
+  delay(2000);
   String nfcInfo = "none";
   while (nfcInfo == "none")
   {
@@ -79,7 +80,7 @@ void waitForHit(Button targetId)
       writeSerial(Cmd::TARGET_HIT, true);
       illuminateButton(targetId, false);
 
-      // wait the remaining time (RFID reader breaks if we dont do this)
+      // wait the remaining time
       delay(TRAVEL_TIME - (millis() - startTime));
       return;
     }

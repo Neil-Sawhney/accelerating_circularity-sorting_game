@@ -1,10 +1,12 @@
 import datetime
 import logging
 import os
+import sys
 import time
 from enum import Enum, auto
 
-from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import QFileInfo, QTimer, QUrl
+from PyQt5.QtMultimedia import QSoundEffect
 
 import arduino.serial_rw as arduino
 import default_parameters as params
@@ -19,6 +21,37 @@ class GameState(Enum):
 
 class Game:
     def __init__(self, disp):
+        # self.background_music = QSoundEffect()
+        # self.background_music.setSource(
+        #     QUrl.fromLocalFile(
+        #         QFileInfo("assets/sounds/background_music.wav").absoluteFilePath()
+        #     )
+        # )
+        # self.background_music.setVolume(0.1)
+        # self.background_music.setLoopCount(-2)  # -2 is infinite for some reason...
+        # self.background_music.play()
+
+        self.correct_sound = QSoundEffect()
+        self.wrong_sound = QSoundEffect()
+        self.scanned_sound = QSoundEffect()
+        self.start_sound = QSoundEffect()
+        self.start_sound.setSource(
+            QUrl.fromLocalFile(QFileInfo("assets/sounds/start.wav").absoluteFilePath())
+        )
+        self.correct_sound.setSource(
+            QUrl.fromLocalFile(
+                QFileInfo("assets/sounds/correct.wav").absoluteFilePath()
+            )
+        )
+        self.wrong_sound.setSource(
+            QUrl.fromLocalFile(QFileInfo("assets/sounds/wrong.wav").absoluteFilePath())
+        )
+        self.scanned_sound.setSource(
+            QUrl.fromLocalFile(
+                QFileInfo("assets/sounds/scanned.wav").absoluteFilePath()
+            )
+        )
+
         self.disp = disp
         self.ard = arduino.SerialRW()
         self.game_state = GameState.WAITING_FOR_START
@@ -57,8 +90,7 @@ class Game:
             return
 
         if arduino_ready:
-            # TODO: replace with start sound
-            self.disp.play_scanned_sound()
+            self.play_start_sound()
 
             self.game_state = GameState.WAITING_FOR_LOADED_MATERIAL
             logging.debug("Start button pressed, waiting for loaded material")
@@ -94,7 +126,7 @@ class Game:
                     + ", waiting for trigger press"
                 )
 
-            self.disp.play_scanned_sound()
+            self.play_scanned_sound()
             self.game_state = GameState.WAITING_FOR_TRIGGER_PRESS
 
     def waiting_for_trigger_press(self):
@@ -105,7 +137,7 @@ class Game:
                 "CORRECT!\n YOU SORTED " + self.curr_fabric + " CORRECTLY!"
             )
             logging.debug("Correct fabric sorted, waiting for loaded material")
-            self.disp.play_correct_sound()
+            self.play_correct_sound()
             self.disp.set_score(self.disp.score.value() + 1)
 
             # update high score
@@ -118,7 +150,7 @@ class Game:
                 "INCORRECT!\n THE PREVIOUS MATERIAL WAS " + self.curr_fabric + "!"
             )
             self.disp.set_score(self.disp.score.value() - 1)
-            self.disp.play_wrong_sound()
+            self.play_wrong_sound()
             logging.debug("incorrect fabric sorted, waiting for loaded material")
 
         if target_hit is None:
@@ -151,16 +183,9 @@ class Game:
 
     def end_game(self):
         self.disp.set_info("GAME OVER!")
-        logging.debug("Waiting for start")
-        self.ard.send_reset()
-        self.disp.set_info("PRESS THE FLASHING BUTTON TO BEGIN!")
+        time.sleep(5)
 
-        self.disp.set_time_left(params.TIME_LIMIT)
-        self.disp.set_score(0)
-        self.init_tech_trigger = False
-        self.tech_on = False
-
-        self.game_state = GameState.WAITING_FOR_START
+        restart_program()
 
     ############################
     # HELPER FUNCTIONS
@@ -193,10 +218,18 @@ class Game:
         QTimer.singleShot(delay, lambda: self.disp.set_info(text))
 
     def play_correct_sound(self):
-        QTimer.singleShot(0, self.disp.play_correct_sound)
+        self.correct_sound.play()
 
     def play_wrong_sound(self):
-        QTimer.singleShot(0, self.disp.play_wrong_sound)
+        self.wrong_sound.play()
 
     def play_scanned_sound(self):
-        QTimer.singleShot(0, self.disp.play_scanned_sound)
+        self.scanned_sound.play()
+
+    def play_start_sound(self):
+        self.start_sound.play()
+
+
+def restart_program():
+    # TODO: fix this
+    pass
