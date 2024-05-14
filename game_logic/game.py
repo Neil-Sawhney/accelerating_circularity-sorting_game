@@ -71,8 +71,8 @@ class Game:
         self.disp.set_time_left(params.TIME_LIMIT - time)
 
         if time > params.TIME_LIMIT / 2 and not self.tech_on:
-            self.tech_on = True
             self.init_tech_trigger = True
+            self.tech_on = True
 
         if time > params.TIME_LIMIT:
             logging.debug("Time limit reached, game over")
@@ -120,9 +120,10 @@ class Game:
         if target_hit is None:
             return
 
-        if self.tech_on and self.init_tech_trigger:
+        if self.init_tech_trigger:
             self.init_tech_trigger = False
             logging.debug("Enabling technology")
+            self.ard.send_TECH_ON()
 
             self.disp.set_info(
                 "TECHNOLOGY ENABLED!!!\nTHE SCANNER WILL DETECT THE MATERIAL BEFORE YOU SHOOT!"

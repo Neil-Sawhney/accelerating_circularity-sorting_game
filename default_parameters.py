@@ -16,7 +16,7 @@ ARDUINO_COMPORT = "/dev/ttyACM1"
 
 ######################################## GAME PARAMETERS ########################################
 # The time in seconds that the game will run for
-TIME_LIMIT = 60
+TIME_LIMIT = 40
 ######################################## GAME PARAMETERS ########################################
 
 ######################################## FABRIC MAPPINGS ########################################
