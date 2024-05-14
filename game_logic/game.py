@@ -76,6 +76,7 @@ class Game:
             self.waiting_for_trigger_press()
         elif self.game_state == GameState.END_STATE:
             self.end_game()
+        time.sleep(0.05)
 
     ############################
     # GAME LOGIC
@@ -185,7 +186,8 @@ class Game:
         self.disp.set_info("GAME OVER!")
         time.sleep(5)
 
-        restart_program()
+        self.tech_on = False
+        self.game_state = GameState.WAITING_FOR_START
 
     ############################
     # HELPER FUNCTIONS
@@ -229,7 +231,3 @@ class Game:
     def play_start_sound(self):
         self.start_sound.play()
 
-
-def restart_program():
-    # TODO: fix this
-    pass
