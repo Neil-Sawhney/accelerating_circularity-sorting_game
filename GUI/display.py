@@ -2,9 +2,9 @@ import logging
 import sys
 
 from PyQt5 import QtCore, QtWidgets, uic
-from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtCore import QFileInfo, QThread, QUrl, pyqtSignal
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtMultimedia import QSound
+from PyQt5.QtMultimedia import QSoundEffect
 
 import default_parameters as params
 import game_logic.game as game
@@ -63,12 +63,27 @@ class MainWindow(QtWidgets.QMainWindow):
         self.high_score_label.setPixmap(high_score_image)
         self.score_label.setPixmap(score_image)
 
-        self.background_music = QSound("assets/sounds/background_music.wav")
-        self.correct_sound = QSound("assets/sounds/correct.wav")
-        self.wrong_sound = QSound("assets/sounds/wrong.wav")
-
-        self.background_music.setLoops(-1)
+        self.background_music = QSoundEffect()
+        self.background_music.setSource(
+            QUrl.fromLocalFile(
+                QFileInfo("assets/sounds/background_music.wav").absoluteFilePath()
+            )
+        )
+        self.background_music.setVolume(0.1)
+        self.background_music.setLoopCount(-2)  # -2 is infinite for some reason...
         self.background_music.play()
+
+        self.correct_sound = QSoundEffect()
+        self.correct_sound.setSource(
+            QUrl.fromLocalFile(
+                QFileInfo("assets/sounds/correct.wav").absoluteFilePath()
+            )
+        )
+
+        self.wrong_sound = QSoundEffect()
+        self.wrong_sound.setSource(
+            QUrl.fromLocalFile(QFileInfo("assets/sounds/wrong.wav").absoluteFilePath())
+        )
 
         # Load the high score
         try:

@@ -23,6 +23,8 @@ class Game:
         self.ard = arduino.SerialRW()
         self.game_state = GameState.WAITING_FOR_START
 
+        # tech trigger is used to ensure the technology enabled message is only displayed once
+        self.init_tech_trigger = False
         self.tech_on = False
 
         self.set_start_time()
@@ -32,7 +34,7 @@ class Game:
 
     def update(self):
         if self.game_state == GameState.WAITING_FOR_START:
-            self.check_for_start()
+            self.waiting_for_start()
         elif self.game_state == GameState.WAITING_FOR_LOADED_MATERIAL:
             self.update_progress()
             self.waiting_for_loaded_material()
@@ -41,13 +43,12 @@ class Game:
             self.waiting_for_trigger_press()
         elif self.game_state == GameState.END_STATE:
             self.end_game()
-        # time.sleep(0.1)
 
     ############################
     # GAME LOGIC
     ############################
 
-    def check_for_start(self):
+    def waiting_for_start(self):
         arduino_ready = self.ard.check_ready()
         if arduino_ready is None:
             self.disp.set_info(
@@ -60,14 +61,9 @@ class Game:
             logging.debug("Start button pressed, waiting for loaded material")
             self.set_start_time()
 
-            if self.tech_on:
-                self.disp.set_info(
-                    "TECHNOLOGY: ENABLED\n\nFEEL THE MATERIAL AND SHOOT IT INTO THE CORRECT BUTTON!"
-                )
-            else:
-                self.disp.set_info(
-                    "TECHNOLOGY: DISABLED\n\nFEEL THE MATERIAL AND SHOOT IT INTO THE CORRECT BUTTON!"
-                )
+            self.disp.set_info(
+                "FEEL THE MATERIAL AND SHOOT IT INTO THE CORRECT BUTTON!"
+            )
 
     def update_progress(self):
         time = self.get_time()
@@ -75,11 +71,8 @@ class Game:
         self.disp.set_time_left(params.TIME_LIMIT - time)
 
         if time > params.TIME_LIMIT / 2 and not self.tech_on:
-            logging.debug("Enabling technology")
-            self.disp.set_info(
-                "TECHNOLOGY ENABLED!!!\nTHE SCANNER WILL DETECT THE MATERIAL BEFORE YOU SHOOT!"
-            )
             self.tech_on = True
+            self.init_tech_trigger = True
 
         if time > params.TIME_LIMIT:
             logging.debug("Time limit reached, game over")
@@ -90,33 +83,23 @@ class Game:
         if self.curr_fabric is not None:
             self.ard.set_target(self.curr_fabric)
 
-            if self.tech_on:
-                self.disp.set_info(
-                    "TECHNOLOGY: ENABLED\n\n" + self.curr_fabric + " detected!"
-                ),
-
-            logging.debug(
-                "Fabric detected: " + self.curr_fabric + ", waiting for trigger press"
-            )
+            if self.tech_on and not self.init_tech_trigger:
+                self.disp.set_info(self.curr_fabric + " detected!"),
+                logging.debug(
+                    "Fabric detected: "
+                    + self.curr_fabric
+                    + ", waiting for trigger press"
+                )
 
             self.game_state = GameState.WAITING_FOR_TRIGGER_PRESS
 
     def waiting_for_trigger_press(self):
         target_hit = self.ard.get_target_hit()
         if target_hit:
-            if self.tech_on:
-                # TODO: change the color too
-                self.disp.set_info(
-                    "TECHNOLOGY: ENABLED\n\n"
-                    + self.curr_fabric
-                    + " WAS SORTED CORRECTLY!"
-                ),
-            else:
-                self.disp.set_info(
-                    "TECHNOLOGY: DISABLED\n\n"
-                    + self.curr_fabric
-                    + " WAS SORTED CORRECTLY!"
-                )
+            # TODO: change the color too
+            self.disp.set_info(
+                "CORRECT!\n YOU SORTED " + self.curr_fabric + " CORRECTLY!"
+            )
             logging.debug("Correct fabric sorted, waiting for loaded material")
             self.disp.play_correct_sound()
             self.disp.set_score(self.disp.score.value() + 1)
@@ -127,49 +110,52 @@ class Game:
                 logging.debug("High score updated to: " + str(self.disp.score.value()))
 
         elif target_hit is not None:
-            if self.tech_on:
-                self.disp.set_info(
-                    "TECHNOLOGY: ENABLED\n\n"
-                    + self.curr_fabric
-                    + " WAS SORTED INCORRECTLY!"
-                )
-            else:
-                self.disp.set_info(
-                    "TECHNOLOGY: DISABLED\n\n"
-                    + self.curr_fabric
-                    + " WAS SORTED INCORRECTLY!"
-                )
+            self.disp.set_info(
+                "INCORRECT!\n THE PREVIOUS MATERIAL WAS " + self.curr_fabric + "!"
+            )
             self.disp.set_score(self.disp.score.value() - 1)
             self.disp.play_wrong_sound()
-            logging.debug("INCORRECT FABRIC SORTED, WAITING FOR LOADED MATERIAL")
+            logging.debug("incorrect fabric sorted, waiting for loaded material")
 
         if target_hit is None:
             return
 
-        if self.tech_on:
-            self.set_text_with_delay(
-                "TECHNOLOGY: ENABLED\n\nFEEL THE MATERIAL AND SHOOT IT INTO THE CORRECT BUTTON!",
-                2000,
+        if self.tech_on and self.init_tech_trigger:
+            self.init_tech_trigger = False
+            logging.debug("Enabling technology")
+
+            self.disp.set_info(
+                "TECHNOLOGY ENABLED!!!\nTHE SCANNER WILL DETECT THE MATERIAL BEFORE YOU SHOOT!"
             )
-            self.ard.send_TECH_ON()
+            self.set_text_with_delay(
+                "FEEL THE MATERIAL AND SHOOT IT INTO THE CORRECT BUTTON!",
+                5000,
+            )
         else:
+            if self.tech_on:
+                self.ard.send_TECH_ON()
+            else:
+                self.ard.send_TECH_OFF()
+
             self.set_text_with_delay(
-                "TECHNOLOGY: DISABLED\n\nFEEL THE MATERIAL AND SHOOT IT INTO THE CORRECT BUTTON!",
+                "FEEL THE MATERIAL AND SHOOT IT INTO THE CORRECT BUTTON!",
                 2000,
             )
-            self.ard.send_TECH_OFF()
+
         self.game_state = GameState.WAITING_FOR_LOADED_MATERIAL
 
     def end_game(self):
+        self.disp.set_info("GAME OVER!")
+        logging.debug("Waiting for start")
+        self.ard.send_reset()
+        self.disp.set_info("PRESS THE FLASHING BUTTON TO BEGIN!")
+
         self.disp.set_time_left(params.TIME_LIMIT)
         self.disp.set_score(0)
+        self.init_tech_trigger = False
+        self.tech_on = False
 
         self.game_state = GameState.WAITING_FOR_START
-        self.ard.send_reset()
-
-        self.disp.set_info("GAME OVER!")
-        self.set_text_with_delay("PRESS THE FLASHING BUTTON TO BEGIN!", 2000)
-        logging.debug("Waiting for start")
 
     ############################
     # HELPER FUNCTIONS
