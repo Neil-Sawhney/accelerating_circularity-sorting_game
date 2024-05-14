@@ -1,5 +1,6 @@
 import logging
 import sys
+import time
 
 from PyQt5 import QtCore, QtWidgets, uic
 from PyQt5.QtCore import QThread, pyqtSignal
@@ -38,6 +39,7 @@ class GameThread(QThread):
 
             # Emit the signal to update the UI
             self.update_signal.emit()
+            time.sleep(0.01)
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -92,9 +94,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def set_time_left(self, time_left):
         self.bar.setValue(int(time_left))
-        QtWidgets.QApplication.processEvents()
-
-    def process_events(self):
         QtWidgets.QApplication.processEvents()
 
 

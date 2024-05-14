@@ -1,12 +1,10 @@
 import datetime
 import logging
 import os
-import sys
-import time
 from enum import Enum, auto
 
 from PyQt5.QtCore import QFileInfo, QTimer, QUrl
-from PyQt5.QtMultimedia import QSoundEffect
+from PyQt5.QtMultimedia import QSound, QSoundEffect
 
 import arduino.serial_rw as arduino
 import default_parameters as params
@@ -21,38 +19,14 @@ class GameState(Enum):
 
 class Game:
     def __init__(self, disp):
-        # self.background_music = QSoundEffect()
-        # self.background_music.setSource(
-        #     QUrl.fromLocalFile(
-        #         QFileInfo("assets/sounds/background_music.wav").absoluteFilePath()
-        #     )
-        # )
-        # self.background_music.setVolume(0.1)
-        # self.background_music.setLoopCount(-2)  # -2 is infinite for some reason...
-        # self.background_music.play()
-
-        self.correct_sound = QSoundEffect()
-        self.wrong_sound = QSoundEffect()
-        self.scanned_sound = QSoundEffect()
-        self.start_sound = QSoundEffect()
-        self.start_sound.setSource(
-            QUrl.fromLocalFile(QFileInfo("assets/sounds/start.wav").absoluteFilePath())
-        )
-        self.correct_sound.setSource(
-            QUrl.fromLocalFile(
-                QFileInfo("assets/sounds/correct.wav").absoluteFilePath()
-            )
-        )
-        self.wrong_sound.setSource(
-            QUrl.fromLocalFile(QFileInfo("assets/sounds/wrong.wav").absoluteFilePath())
-        )
-        self.scanned_sound.setSource(
-            QUrl.fromLocalFile(
-                QFileInfo("assets/sounds/scanned.wav").absoluteFilePath()
-            )
-        )
-
         self.disp = disp
+
+        self.background_music = QSound("assets/sounds/background_music.wav")
+        self.correct_sound = QSound("assets/sounds/correct.wav")
+        self.wrong_sound = QSound("assets/sounds/wrong.wav")
+        self.scanned_sound = QSound("assets/sounds/scanned.wav")
+        self.start_sound = QSound("assets/sounds/start.wav")
+
         self.ard = arduino.SerialRW()
         self.game_state = GameState.WAITING_FOR_START
 
@@ -76,7 +50,6 @@ class Game:
             self.waiting_for_trigger_press()
         elif self.game_state == GameState.END_STATE:
             self.end_game()
-        time.sleep(0.05)
 
     ############################
     # GAME LOGIC
@@ -184,9 +157,14 @@ class Game:
 
     def end_game(self):
         self.disp.set_info("GAME OVER!")
-        time.sleep(5)
-
+        self.set_start_time()
+        self.disp.set_score(0)
+        self.disp.set_info("INITIALIZING...")
+        self.disp.set_time_left(params.TIME_LIMIT)
         self.tech_on = False
+        self.init_tech_trigger = False
+        self.ard.send_reset()
+        self.disp.set_info("PRESS THE FLASHING BUTTON TO BEGIN!")
         self.game_state = GameState.WAITING_FOR_START
 
     ############################
@@ -230,4 +208,3 @@ class Game:
 
     def play_start_sound(self):
         self.start_sound.play()
-
