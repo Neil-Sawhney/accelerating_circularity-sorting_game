@@ -164,7 +164,7 @@ class Game:
         self.tech_on = False
         self.init_tech_trigger = False
         self.ard.send_reset()
-        self.disp.set_info("PRESS THE FLASHING BUTTON TO BEGIN!")
+        self.set_text_with_delay("PRESS THE FLASHING BUTTON TO BEGIN!", 5000)
         self.game_state = GameState.WAITING_FOR_START
 
     ############################
