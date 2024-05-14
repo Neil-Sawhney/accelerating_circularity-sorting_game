@@ -39,7 +39,7 @@ class GameThread(QThread):
 
             # Emit the signal to update the UI
             self.update_signal.emit()
-            time.sleep(0.01)
+            time.sleep(0.1)
 
 
 class MainWindow(QtWidgets.QMainWindow):

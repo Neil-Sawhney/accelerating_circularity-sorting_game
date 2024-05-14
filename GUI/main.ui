@@ -57,7 +57,7 @@ QProgressBar::chunk{
 }
 
 #info{
-font: 87 italic bold 40pt &quot;Arimo&quot;;
+font: 87 italic bold 35pt &quot;Arimo&quot;;
 color: #ed008c;
 }
 
@@ -363,7 +363,7 @@ color: #ed008c;
          <property name="font">
           <font>
            <family>Arimo</family>
-           <pointsize>40</pointsize>
+           <pointsize>35</pointsize>
            <weight>75</weight>
            <italic>true</italic>
            <bold>true</bold>
