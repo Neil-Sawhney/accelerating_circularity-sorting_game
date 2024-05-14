@@ -57,6 +57,9 @@ class Game:
             return
 
         if arduino_ready:
+            # TODO: replace with start sound
+            self.disp.play_scanned_sound()
+
             self.game_state = GameState.WAITING_FOR_LOADED_MATERIAL
             logging.debug("Start button pressed, waiting for loaded material")
             self.set_start_time()
@@ -91,6 +94,7 @@ class Game:
                     + ", waiting for trigger press"
                 )
 
+            self.disp.play_scanned_sound()
             self.game_state = GameState.WAITING_FOR_TRIGGER_PRESS
 
     def waiting_for_trigger_press(self):
@@ -187,3 +191,12 @@ class Game:
             display_time (int): the time in milliseconds to display the text
         """
         QTimer.singleShot(delay, lambda: self.disp.set_info(text))
+
+    def play_correct_sound(self):
+        QTimer.singleShot(0, self.disp.play_correct_sound)
+
+    def play_wrong_sound(self):
+        QTimer.singleShot(0, self.disp.play_wrong_sound)
+
+    def play_scanned_sound(self):
+        QTimer.singleShot(0, self.disp.play_scanned_sound)

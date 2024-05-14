@@ -71,9 +71,14 @@ class SerialRW:
 
         # get a line from the arduino without blocking
         serialData = self.ser.read_until(b"\n", 100).decode("utf-8")
-        rx_cmd, rx_message = serialData.split(",")
-        rx_message = rx_message.rstrip()
-        cmd = Cmd(int(rx_cmd))
+        try:
+            # FIXME, encountered a bug where the arduino only returned one value, this might fix that? good luck encountering it again
+            rx_cmd, rx_message = serialData.split(",")
+            rx_message = rx_message.rstrip()
+            cmd = Cmd(int(rx_cmd))
+        except ValueError:
+            logging.error("Error: " + serialData)
+            return None, None
 
         # while the data recievied is a logging command, print the data to the log file and get the next line
         while cmd == Cmd.LOGGING:

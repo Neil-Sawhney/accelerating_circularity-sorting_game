@@ -63,15 +63,15 @@ class MainWindow(QtWidgets.QMainWindow):
         self.high_score_label.setPixmap(high_score_image)
         self.score_label.setPixmap(score_image)
 
-        self.background_music = QSoundEffect()
-        self.background_music.setSource(
-            QUrl.fromLocalFile(
-                QFileInfo("assets/sounds/background_music.wav").absoluteFilePath()
-            )
-        )
-        self.background_music.setVolume(0.1)
-        self.background_music.setLoopCount(-2)  # -2 is infinite for some reason...
-        self.background_music.play()
+        # self.background_music = QSoundEffect()
+        # self.background_music.setSource(
+        #     QUrl.fromLocalFile(
+        #         QFileInfo("assets/sounds/background_music.wav").absoluteFilePath()
+        #     )
+        # )
+        # self.background_music.setVolume(0.1)
+        # self.background_music.setLoopCount(-2)  # -2 is infinite for some reason...
+        # self.background_music.play()
 
         self.correct_sound = QSoundEffect()
         self.correct_sound.setSource(
@@ -79,10 +79,15 @@ class MainWindow(QtWidgets.QMainWindow):
                 QFileInfo("assets/sounds/correct.wav").absoluteFilePath()
             )
         )
-
         self.wrong_sound = QSoundEffect()
         self.wrong_sound.setSource(
             QUrl.fromLocalFile(QFileInfo("assets/sounds/wrong.wav").absoluteFilePath())
+        )
+        self.scanned_sound = QSoundEffect()
+        self.scanned_sound.setSource(
+            QUrl.fromLocalFile(
+                QFileInfo("assets/sounds/scanned.wav").absoluteFilePath()
+            )
         )
 
         # Load the high score
@@ -122,6 +127,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def play_wrong_sound(self):
         self.wrong_sound.play()
+
+    def play_scanned_sound(self):
+        self.scanned_sound.play()
 
 
 def main():
