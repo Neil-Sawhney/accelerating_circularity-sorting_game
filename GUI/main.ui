@@ -13,6 +13,7 @@
   <property name="font">
    <font>
     <family>Standard Symbols PS [URW ]</family>
+    <pointsize>7</pointsize>
    </font>
   </property>
   <property name="windowTitle">
@@ -56,7 +57,7 @@ QProgressBar::chunk{
 }
 
 #info{
-font: 87 italic bold 50pt &quot;Arimo&quot;;
+font: 87 italic bold 40pt &quot;Arimo&quot;;
 color: #ed008c;
 }
 
@@ -362,7 +363,7 @@ color: #ed008c;
          <property name="font">
           <font>
            <family>Arimo</family>
-           <pointsize>50</pointsize>
+           <pointsize>40</pointsize>
            <weight>75</weight>
            <italic>true</italic>
            <bold>true</bold>
