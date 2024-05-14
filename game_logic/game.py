@@ -1,4 +1,5 @@
 import datetime
+import time
 import logging
 import os
 from enum import Enum, auto
@@ -159,12 +160,13 @@ class Game:
         self.disp.set_info("GAME OVER!")
         self.set_start_time()
         self.disp.set_score(0)
+        time.sleep(3)
         self.disp.set_info("INITIALIZING...")
         self.disp.set_time_left(params.TIME_LIMIT)
         self.tech_on = False
         self.init_tech_trigger = False
         self.ard.send_reset()
-        self.set_text_with_delay("PRESS THE FLASHING BUTTON TO BEGIN!", 5000)
+        self.disp.set_info("PRESS THE FLASHING BUTTON TO BEGIN!")
         self.game_state = GameState.WAITING_FOR_START
 
     ############################
