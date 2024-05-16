@@ -1,4 +1,5 @@
 import datetime
+import time
 import logging
 import os
 from enum import Enum, auto
@@ -72,7 +73,7 @@ class Game:
             self.set_start_time()
 
             self.disp.set_info(
-                "FEEL THE MATERIAL AND SHOOT IT INTO THE CORRECT BUTTON!"
+                "FEEL THE MATERIAL\n AND SHOOT IT INTO THE CORRECT BUTTON!"
             )
 
     def update_progress(self):
@@ -140,7 +141,7 @@ class Game:
                 "TECHNOLOGY ENABLED!!!\nTHE SCANNER WILL DETECT THE MATERIAL BEFORE YOU SHOOT!"
             )
             self.set_text_with_delay(
-                "FEEL THE MATERIAL AND SHOOT IT INTO THE CORRECT BUTTON!",
+                "FEEL THE MATERIAL\n AND SHOOT IT INTO THE CORRECT BUTTON!",
                 5000,
             )
         else:
@@ -150,7 +151,7 @@ class Game:
                 self.ard.send_TECH_OFF()
 
             self.set_text_with_delay(
-                "FEEL THE MATERIAL AND SHOOT IT INTO THE CORRECT BUTTON!",
+                "FEEL THE MATERIAL\n AND SHOOT IT INTO THE CORRECT BUTTON!",
                 2000,
             )
 
@@ -162,6 +163,7 @@ class Game:
 
         self.set_start_time()
         self.disp.set_score(0)
+        time.sleep(3)
         self.disp.set_info("INITIALIZING...")
         self.disp.set_time_left(params.TIME_LIMIT)
         self.tech_on = False
