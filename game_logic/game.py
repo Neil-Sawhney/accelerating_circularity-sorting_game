@@ -26,6 +26,7 @@ class Game:
         self.wrong_sound = QSound("assets/sounds/wrong.wav")
         self.scanned_sound = QSound("assets/sounds/scanned.wav")
         self.start_sound = QSound("assets/sounds/start.wav")
+        self.end_game_sound = QSound("assets/sounds/end_game.wav")
 
         self.ard = arduino.SerialRW()
         self.game_state = GameState.WAITING_FOR_START
@@ -64,7 +65,7 @@ class Game:
             return
 
         if arduino_ready:
-            self.play_start_sound()
+            self.start_sound.play()
 
             self.game_state = GameState.WAITING_FOR_LOADED_MATERIAL
             logging.debug("Start button pressed, waiting for loaded material")
@@ -100,7 +101,7 @@ class Game:
                     + ", waiting for trigger press"
                 )
 
-            self.play_scanned_sound()
+            self.scanned_sound.play()
             self.game_state = GameState.WAITING_FOR_TRIGGER_PRESS
 
     def waiting_for_trigger_press(self):
@@ -111,7 +112,7 @@ class Game:
                 "CORRECT!\n YOU SORTED " + self.curr_fabric + " CORRECTLY!"
             )
             logging.debug("Correct fabric sorted, waiting for loaded material")
-            self.play_correct_sound()
+            self.correct_sound.play()
             self.disp.set_score(self.disp.score.value() + 1)
 
             # update high score
@@ -124,7 +125,7 @@ class Game:
                 "INCORRECT!\n THE PREVIOUS MATERIAL WAS " + self.curr_fabric + "!"
             )
             self.disp.set_score(self.disp.score.value() - 1)
-            self.play_wrong_sound()
+            self.wrong_sound.play()
             logging.debug("incorrect fabric sorted, waiting for loaded material")
 
         if target_hit is None:
@@ -157,12 +158,15 @@ class Game:
 
     def end_game(self):
         self.disp.set_info("GAME OVER!")
+        self.end_game_sound.play()
+
         self.set_start_time()
         self.disp.set_score(0)
         self.disp.set_info("INITIALIZING...")
         self.disp.set_time_left(params.TIME_LIMIT)
         self.tech_on = False
         self.init_tech_trigger = False
+
         self.ard.send_reset()
         self.disp.set_info("PRESS THE FLASHING BUTTON TO BEGIN!")
         self.game_state = GameState.WAITING_FOR_START
@@ -196,15 +200,3 @@ class Game:
             display_time (int): the time in milliseconds to display the text
         """
         QTimer.singleShot(delay, lambda: self.disp.set_info(text))
-
-    def play_correct_sound(self):
-        self.correct_sound.play()
-
-    def play_wrong_sound(self):
-        self.wrong_sound.play()
-
-    def play_scanned_sound(self):
-        self.scanned_sound.play()
-
-    def play_start_sound(self):
-        self.start_sound.play()
