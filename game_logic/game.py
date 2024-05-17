@@ -1,5 +1,4 @@
 import datetime
-import sys
 import time
 import logging
 import os
@@ -29,6 +28,7 @@ class Game:
         self.scanned_sound = QSound("assets/sounds/scanned.wav")
         self.start_sound = QSound("assets/sounds/start.wav")
         self.end_game_sound = QSound("assets/sounds/end_game.wav")
+        self.end_game_sound.setLoops(3)
 
         self.background_music.setLoops(-2)
         self.background_music.play()
@@ -91,6 +91,7 @@ class Game:
 
         if time > params.TIME_LIMIT:
             logging.debug("Time limit reached, game over")
+            self.end_game_sound.play()
             self.game_state = GameState.END_STATE
 
     def waiting_for_loaded_material(self):
@@ -162,33 +163,9 @@ class Game:
         self.game_state = GameState.WAITING_FOR_LOADED_MATERIAL
 
     def end_game(self):
+        self.background_music.stop()
         self.disp.set_info("GAME OVER!")
-        self.end_game_sound.play()
-        time.sleep(5)
-        self.end_game_sound.play()
-        sys.exit()
-        # self.background_music.stop()
-
-        # self.set_start_time()
-        # time.sleep(3)
-        # self.disp.set_info("INITIALIZING...")
-        # self.disp.set_time_left(params.TIME_LIMIT)
-        # self.tech_on = False
-        # self.init_tech_trigger = False
-
-        # self.ard.send_reset()
-        # self.disp.set_info("PRESS THE FLASHING BUTTON TO BEGIN!")
-        # self.game_state = GameState.WAITING_FOR_START
-
-        # self.disp.set_score(0)
-        # self.background_music = QSound("assets/sounds/background_music.wav")
-        # self.correct_sound = QSound("assets/sounds/correct.wav")
-        # self.wrong_sound = QSound("assets/sounds/wrong.wav")
-        # self.scanned_sound = QSound("assets/sounds/scanned.wav")
-        # self.start_sound = QSound("assets/sounds/start.wav")
-        # self.end_game_sound = QSound("assets/sounds/end_game.wav")
-
-        # self.background_music.play()
+        QTimer.singleShot(4000, os._exit(0))
 
     ############################
     # HELPER FUNCTIONS
