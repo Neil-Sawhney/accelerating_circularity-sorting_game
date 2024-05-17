@@ -7,7 +7,7 @@
 #define TRAVEL_TIME 500
 
 // time it takes for the disks to slide under the door in milliseconds
-#define DOOR_TIME 1000
+#define DOOR_TIME 300
 
 #define FLASH_PERIOD 100
 

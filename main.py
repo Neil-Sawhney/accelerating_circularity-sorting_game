@@ -16,7 +16,7 @@ def main():
         eDisp.displayError(e)
     finally:
         # if the program is closed, or an error occurs
-        pass
+        main()
 
 
 if __name__ == "__main__":

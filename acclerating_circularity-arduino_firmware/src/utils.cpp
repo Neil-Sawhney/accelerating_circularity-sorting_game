@@ -28,6 +28,7 @@ void waitForStartButton()
       digitalWrite(START_BUTTON_LED_PIN, toggle);
     }
   }
+  digitalWrite(START_BUTTON_LED_PIN, LOW);
   clearBasket();
   writeSerial(Cmd::STATUS, Status::READY);
 }
@@ -101,8 +102,12 @@ void turnOffAllLeds()
 void clearBasket()
 {
   setMotorState(MotorState::OPENING);
+  delay(300);
+  setMotorState(MotorState::IDLE);
+  
   delay(DOOR_TIME);
+
   setMotorState(MotorState::CLOSING);
-  delay(DOOR_TIME);
+  delay(500);
   setMotorState(MotorState::IDLE);
 }

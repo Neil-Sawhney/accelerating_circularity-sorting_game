@@ -1,4 +1,5 @@
 import datetime
+import sys
 import time
 import logging
 import os
@@ -28,6 +29,9 @@ class Game:
         self.scanned_sound = QSound("assets/sounds/scanned.wav")
         self.start_sound = QSound("assets/sounds/start.wav")
         self.end_game_sound = QSound("assets/sounds/end_game.wav")
+
+        self.background_music.setLoops(-2)
+        self.background_music.play()
 
         self.ard = arduino.SerialRW()
         self.game_state = GameState.WAITING_FOR_START
@@ -114,7 +118,7 @@ class Game:
             )
             logging.debug("Correct fabric sorted, waiting for loaded material")
             self.correct_sound.play()
-            self.disp.set_score(self.disp.score.value() + 1)
+            self.disp.set_score(self.disp.score.value() + 100)
 
             # update high score
             if self.disp.score.value() > self.disp.high_score.value():
@@ -125,7 +129,7 @@ class Game:
             self.disp.set_info(
                 "INCORRECT!\n THE PREVIOUS MATERIAL WAS " + self.curr_fabric + "!"
             )
-            self.disp.set_score(self.disp.score.value() - 1)
+            self.disp.set_score(self.disp.score.value() - 25)
             self.wrong_sound.play()
             logging.debug("incorrect fabric sorted, waiting for loaded material")
 
@@ -160,18 +164,31 @@ class Game:
     def end_game(self):
         self.disp.set_info("GAME OVER!")
         self.end_game_sound.play()
+        time.sleep(5)
+        self.end_game_sound.play()
+        sys.exit()
+        # self.background_music.stop()
 
-        self.set_start_time()
-        self.disp.set_score(0)
-        time.sleep(3)
-        self.disp.set_info("INITIALIZING...")
-        self.disp.set_time_left(params.TIME_LIMIT)
-        self.tech_on = False
-        self.init_tech_trigger = False
+        # self.set_start_time()
+        # time.sleep(3)
+        # self.disp.set_info("INITIALIZING...")
+        # self.disp.set_time_left(params.TIME_LIMIT)
+        # self.tech_on = False
+        # self.init_tech_trigger = False
 
-        self.ard.send_reset()
-        self.disp.set_info("PRESS THE FLASHING BUTTON TO BEGIN!")
-        self.game_state = GameState.WAITING_FOR_START
+        # self.ard.send_reset()
+        # self.disp.set_info("PRESS THE FLASHING BUTTON TO BEGIN!")
+        # self.game_state = GameState.WAITING_FOR_START
+
+        # self.disp.set_score(0)
+        # self.background_music = QSound("assets/sounds/background_music.wav")
+        # self.correct_sound = QSound("assets/sounds/correct.wav")
+        # self.wrong_sound = QSound("assets/sounds/wrong.wav")
+        # self.scanned_sound = QSound("assets/sounds/scanned.wav")
+        # self.start_sound = QSound("assets/sounds/start.wav")
+        # self.end_game_sound = QSound("assets/sounds/end_game.wav")
+
+        # self.background_music.play()
 
     ############################
     # HELPER FUNCTIONS

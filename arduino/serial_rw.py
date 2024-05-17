@@ -155,7 +155,12 @@ class SerialRW:
         Args:
             fabric (str): the target to send to the arduino
         """
-        target = Button(params.fabric_mapping[fabric])
+        try:
+            target = Button(params.fabric_mapping[fabric])
+        except:
+            # Default faulty cards to trash
+            target = Button(params.fabric_mapping["TRASH"])
+
         self.ser.write(
             (str(Cmd.TARGET.value) + "," + str(target.value) + "\n").encode()
         )
