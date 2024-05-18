@@ -1,7 +1,7 @@
 import datetime
-import time
 import logging
 import os
+import time
 from enum import Enum, auto
 
 from PyQt5.QtCore import QFileInfo, QTimer, QUrl
@@ -27,6 +27,8 @@ class Game:
         self.wrong_sound = QSound("assets/sounds/wrong.wav")
         self.scanned_sound = QSound("assets/sounds/scanned.wav")
         self.start_sound = QSound("assets/sounds/start.wav")
+        self.tech_on_sound = QSound("assets/sounds/tech_on.wav")
+
         self.end_game_sound = QSound("assets/sounds/end_game.wav")
         self.end_game_sound.setLoops(3)
 
@@ -149,6 +151,9 @@ class Game:
                 "FEEL THE MATERIAL\n AND SHOOT IT INTO THE CORRECT BUTTON!",
                 5000,
             )
+
+            self.tech_on_sound.play()
+
         else:
             if self.tech_on:
                 self.ard.send_TECH_ON()
