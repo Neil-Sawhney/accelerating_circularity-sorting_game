@@ -170,7 +170,7 @@ class Game:
     def end_game(self):
         self.background_music.stop()
         self.disp.set_info("GAME OVER!")
-        QTimer.singleShot(4000, os._exit(0))
+        QTimer.singleShot(4000, os._exit)
 
     ############################
     # HELPER FUNCTIONS
